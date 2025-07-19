@@ -366,9 +366,9 @@
                 
                 <label for="marginSelect" style="margin-left: 20px;">Margin:</label>
                 <select id="marginSelect">
-                    <option value="0.5">Small (0.5 in)</option>
-                    <option value="0.75" selected>Medium (0.75 in)</option>
-                    <option value="1">Large (1 in)</option>
+                    <option value="0.75">Small (0.75 in)</option>
+                    <option value="1" selected>Medium (1 in)</option>
+                    <option value="1.25">Large (1.25 in)</option>
                     <option value="1.5">Extra Large (1.5 in)</option>
                 </select>
             </div>
@@ -392,17 +392,17 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20mm;
+            padding: 25mm;
             color: #333;
-            /* A4 optimized styling */
-            max-width: 170mm; /* A4 width minus margins */
+            /* A4 optimized styling with proper margins */
+            max-width: 160mm; /* A4 width (210mm) minus larger margins (50mm total) */
             font-size: 12pt;
         }
 
 ```
     @page {
         size: A4;
-        margin: 20mm;
+        margin: 25mm; /* Increased margin for better visibility */
     }
     
     h1 {
@@ -498,8 +498,13 @@
         </tr>
         <tr>
             <td>Margins</td>
-            <td>20mm all sides</td>
-            <td>✅ Professional</td>
+            <td>25mm all sides (1 inch)</td>
+            <td>✅ Safe margins</td>
+        </tr>
+        <tr>
+            <td>Content Width</td>
+            <td>160mm (safe zone)</td>
+            <td>✅ No text cutoff</td>
         </tr>
         <tr>
             <td>Font Size</td>
@@ -575,11 +580,11 @@
         <div class="instructions-grid">
             <div class="instruction-item">
                 <h4>📏 A4 Specifications</h4>
-                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app automatically configures optimal margins and scaling for perfect A4 output.</p>
+                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app uses 1-inch margins by default with content width of 160mm for optimal text visibility and professional appearance.</p>
             </div>
             <div class="instruction-item">
                 <h4>🎯 Optimal Settings</h4>
-                <p>Use 12pt fonts for body text, 20mm margins, and avoid content wider than 170mm for best A4 results. Page breaks are automatically handled.</p>
+                <p>Use 12pt fonts for body text, 25mm margins (1 inch), and content width under 160mm for best A4 results. This ensures text is never cut off at page edges.</p>
             </div>
             <div class="instruction-item">
                 <h4>📱 Export Options</h4>
@@ -646,9 +651,9 @@
         const element = document.createElement('div');
         element.innerHTML = htmlCode;
         
-        // A4 optimized PDF options
+        // A4 optimized PDF options with proper margins
         const opt = {
-            margin: margin,
+            margin: [margin, margin, margin, margin], // Top, Right, Bottom, Left margins
             filename: `document-${format}.pdf`,
             image: { 
                 type: 'jpeg', 
@@ -659,18 +664,23 @@
                 useCORS: true,
                 letterRendering: true,
                 allowTaint: false,
-                dpi: 192,
-                logging: false
+                dpi: 150, // Reduced DPI for better margin handling
+                logging: false,
+                windowWidth: 794, // A4 width in pixels at 96 DPI
+                windowHeight: 1123 // A4 height in pixels at 96 DPI
             },
             jsPDF: { 
-                unit: 'mm', 
+                unit: 'in', // Using inches for better margin control
                 format: format, 
                 orientation: orientation,
                 putOnlyUsedFonts: true,
                 floatPrecision: 16
             },
             pagebreak: { 
-                mode: ['avoid-all', 'css', 'legacy'] 
+                mode: ['avoid-all', 'css', 'legacy'],
+                before: '.page-break',
+                after: '.page-break-after',
+                avoid: '.no-break'
             }
         };
         
@@ -720,13 +730,15 @@
                         content: `Create HTML content for: ${prompt}
 
                         IMPORTANT: Optimize for A4 paper format (210 × 297 mm) with these specifications:
-                        - Use @page { size: A4; margin: 20mm; } in CSS
+                        - Use @page { size: A4; margin: 25mm; } in CSS
+                        - Body padding: 25mm, max-width: 160mm for proper margins
                         - Body font-size: 12pt, line-height: 1.6
                         - Headings: h1 18pt, h2 14pt
-                        - Max content width: 170mm (A4 width minus margins)
+                        - Ensure all content fits within 160mm width to prevent text cutoff
                         - Include page-break properties for print optimization
                         - Use professional spacing and typography
                         - Add print-friendly colors and styling
+                        - Test that no text extends to page edges
 
                         Return ONLY the complete HTML code, starting with <!DOCTYPE html> and ending with </html>.
                         The HTML should be perfectly formatted for A4 PDF export.`
