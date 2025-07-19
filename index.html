@@ -154,16 +154,6 @@
         box-shadow: 0 10px 20px rgba(86, 171, 47, 0.3);
     }
     
-    .btn-warning {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-    }
-    
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
-    }
-    
     .settings-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -277,7 +267,7 @@
 
 <html>
 <head>
-  <title>Professional Business Report</title>
+  <title>Sample Document</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
     h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
@@ -349,9 +339,9 @@
 
 ```
             <div class="buttons">
-                <button class="btn btn-primary" onclick="updatePreview()">🔄 Update Preview</button>
+                <button class="btn btn-primary" onclick="openPrintPage()">🔄 Update Preview</button>
                 <button class="btn btn-success" onclick="downloadHTML()">📥 Download HTML</button>
-                <button class="btn btn-warning" onclick="openPrintWindow()">🖨️ Open Print Window</button>
+                <button class="btn btn-primary" onclick="openPrintPage()">🖨️ Open Print Page</button>
             </div>
         </div>
         
@@ -360,21 +350,22 @@
             <div class="ios-instructions">
                 <h3>📱 How to Save as PDF on iOS:</h3>
                 <ol>
-                    <li>Use the <strong>"Download HTML"</strong> button (most reliable)</li>
-                    <li>Or click <strong>"Open Print Window"</strong> for new tab</li>
-                    <li>Tap Safari's <strong>Share</strong> button</li>
-                    <li>Select <strong>"Print"</strong></li>
-                    <li><strong>Pinch to zoom</strong> on preview</li>
-                    <li>Tap <strong>"Share" → "Save to Books"</strong></li>
+                    <li>Tap the <strong>Share</strong> button (square with arrow up)</li>
+                    <li>Select <strong>"Print"</strong> from the menu</li>
+                    <li><strong>Pinch to zoom</strong> on the preview to see full document</li>
+                    <li>Tap <strong>"Share"</strong> again, then <strong>"Save to Books"</strong></li>
+                    <li>Your PDF will be saved to the Books app!</li>
                 </ol>
             </div>
             
             <h2 style="margin-bottom: 20px;">📄 PDF Preview</h2>
-            <div id="previewArea" class="preview-area"></div>
+            <div id="previewArea" class="preview-area">
+                <!-- Preview content will be inserted here -->
+            </div>
             
             <div class="buttons">
+                <button class="btn btn-primary" onclick="openPrintPage()">🖨️ Print This Preview</button>
                 <button class="btn btn-success" onclick="downloadHTML()">📥 Download HTML</button>
-                <button class="btn btn-warning" onclick="openPrintWindow()">🖨️ Open Print Window</button>
             </div>
         </div>
         
@@ -429,15 +420,21 @@
 
 <script>
     function showTab(tabName) {
+        // Hide all tab contents
         const contents = document.querySelectorAll('.tab-content');
         contents.forEach(content => content.classList.remove('active'));
         
+        // Remove active class from all tabs
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => tab.classList.remove('active'));
         
+        // Show selected tab content
         document.getElementById(tabName).classList.add('active');
+        
+        // Add active class to clicked tab
         event.target.classList.add('active');
         
+        // Update preview if preview tab is selected
         if (tabName === 'preview') {
             updatePreview();
         }
@@ -448,9 +445,11 @@
         const previewArea = document.getElementById('previewArea');
         
         try {
+            // Create a temporary div to parse HTML
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = htmlCode;
             
+            // Extract body content or use the full HTML
             const bodyContent = tempDiv.querySelector('body');
             if (bodyContent) {
                 previewArea.innerHTML = bodyContent.innerHTML;
@@ -458,6 +457,7 @@
                 previewArea.innerHTML = htmlCode;
             }
             
+            // Execute any scripts in the preview
             const scripts = previewArea.querySelectorAll('script');
             scripts.forEach(script => {
                 const newScript = document.createElement('script');
@@ -515,18 +515,15 @@
         padding: 20px;
         border-radius: 10px;
         margin-bottom: 30px;
-        text-align: center;
     }
-    .print-button {
-        background: white;
-        color: #007bff;
-        border: none;
-        padding: 15px 30px;
-        border-radius: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 20px;
-        cursor: pointer;
+    .print-instructions h3 {
+        margin-bottom: 15px;
+    }
+    .print-instructions ol {
+        margin-left: 20px;
+    }
+    .print-instructions li {
+        margin-bottom: 8px;
     }
 </style>`;
         
@@ -548,9 +545,14 @@
 </head>
 <body>
     <div class="print-instructions no-print">
-        <h3>📱 iOS: Ready to Print!</h3>
-        <p><strong>Tap Share button → Print → Save to Books</strong></p>
-        <button class="print-button" onclick="window.print()">🖨️ Print Now</button>
+        <h3>📱 iOS: How to Save as PDF</h3>
+        <ol>
+            <li>Tap Safari's <strong>Share</strong> button (square with arrow)</li>
+            <li>Select <strong>"Print"</strong></li>
+            <li><strong>Pinch to zoom</strong> on preview</li>
+            <li>Tap <strong>"Share"</strong> → <strong>"Save to Books"</strong></li>
+        </ol>
+        <button onclick="window.print()" style="background: white; color: #007bff; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-top: 15px; cursor: pointer;">🖨️ Print Now</button>
     </div>
 
 ```
@@ -562,7 +564,7 @@
 ${bodyContent}
 
 <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 20px;">
-    <p>Generated by HTML to PDF Converter</p>
+    <p>Generated by HTML to PDF Converter on ${new Date().toLocaleDateString()}</p>
 </div>
 ```
 
@@ -580,16 +582,91 @@ ${bodyContent}
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
-        alert('📱 HTML file downloaded! Open it in Safari to print to PDF.');
+        alert('📱 HTML file downloaded! Open it in Safari and follow the instructions to save as PDF to Books.');
     }
     
-    function openPrintWindow() {
+    function openPrintPage() {
         const htmlCode = document.getElementById('htmlCode').value;
         const pageFormat = document.getElementById('pageFormat').value;
         const orientation = document.getElementById('orientation').value;
         const margin = document.getElementById('margin').value;
         
-        const printHTML = `<!DOCTYPE html>
+        const pdfCSS = `
+<style>
+    @page {
+        size: ${pageFormat} ${orientation};
+        margin: ${margin};
+    }
+    @media print {
+        body { 
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .no-print { display: none !important; }
+        .print-button { display: none !important; }
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 100%;
+        margin: 0;
+        padding: 20px;
+        background: white;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+    table {
+        page-break-inside: avoid;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .print-instructions {
+        background: #007bff;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .print-instructions h3 {
+        margin-bottom: 15px;
+    }
+    .print-instructions ol {
+        text-align: left;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .print-instructions li {
+        margin-bottom: 8px;
+    }
+    .print-button {
+        background: white;
+        color: #007bff;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .print-button:hover {
+        background: #f8f9fa;
+    }
+</style>`;
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlCode, 'text/html');
+        const existingStyles = doc.head ? doc.head.innerHTML : '';
+        const bodyContent = doc.body ? doc.body.innerHTML : htmlCode;
+        
+        const fullHTML = `<!DOCTYPE html>
 ```
 
 <html>
@@ -597,53 +674,144 @@ ${bodyContent}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print Ready Document</title>
-    <style>
-        @page { size: ${pageFormat} ${orientation}; margin: ${margin}; }
-        @media print {
-            .no-print { display: none !important; }
-            body { -webkit-print-color-adjust: exact !important; }
-        }
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
-        .print-header { 
-            background: #007bff; 
-            color: white; 
-            padding: 20px; 
-            text-align: center; 
-            margin-bottom: 30px; 
-            border-radius: 10px;
-        }
-        .print-button {
-            background: white;
-            color: #007bff;
-            border: 2px solid #007bff;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 20px 0;
-        }
-    </style>
+    ${existingStyles}
+    ${pdfCSS}
 </head>
 <body>
-    <div class="print-header no-print">
-        <h2>🖨️ Ready to Print!</h2>
-        <p>Click the button below to open print dialog</p>
-        <button class="print-button" onclick="window.print()">Print to PDF</button>
+    <div class="print-instructions no-print">
+        <h3>📱 iOS: Ready to Print!</h3>
+        <ol>
+            <li><strong>Tap the Print button below</strong></li>
+            <li>iOS print dialog will appear</li>
+            <li><strong>Pinch to zoom</strong> on preview</li>
+            <li>Tap <strong>"Share"</strong> → <strong>"Save to Books"</strong></li>
+        </ol>
+        <button class="print-button" onclick="window.print()">🖨️ Print Now</button>
     </div>
-    ${htmlCode.includes('<body>') ? htmlCode.split('<body>')[1].split('</body>')[0] : htmlCode}
+
+```
+<div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 20px;">
+    <h3>Generated PDF Document</h3>
+    <p>Created: ${new Date().toLocaleDateString()}</p>
+</div>
+
+${bodyContent}
+
+<div style="margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 20px;">
+    <p>Generated by HTML to PDF Converter on ${new Date().toLocaleDateString()}</p>
+</div>
+```
+
 </body>
 </html>`;
 
 ```
+        // Try to open in same window for iOS compatibility
         const newWindow = window.open('', '_blank');
-        newWindow.document.write(printHTML);
-        newWindow.document.close();
+        if (newWindow) {
+            newWindow.document.open();
+            newWindow.document.write(fullHTML);
+            newWindow.document.close();
+        } else {
+            // Fallback: replace current page temporarily
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = fullHTML;
+            
+            // Add a back button
+            const backButton = document.createElement('button');
+            backButton.textContent = '← Back to Editor';
+            backButton.style.cssText = 'position: fixed; top: 10px; left: 10px; z-index: 9999; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px;';
+            backButton.onclick = () => {
+                document.body.innerHTML = originalContent;
+                location.reload();
+            };
+            document.body.appendChild(backButton);
+        }
     }
     
-    // Initialize
+    function printDocument() {
+        openPrintPage();
+    }
+    
+    function addPrintStyling() {
+        // Remove existing print style if any
+        const existingStyle = document.getElementById('printStyle');
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+        
+        // Add new print styling
+        const style = document.createElement('style');
+        style.id = 'printStyle';
+        style.textContent = `
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { 
+                    background: white !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                }
+                .container { 
+                    box-shadow: none !important; 
+                    border-radius: 0 !important;
+                    margin: 0 !important;
+                    background: white !important;
+                }
+                .header, .tabs, .buttons, .ios-instructions { 
+                    display: none !important; 
+                }
+                .content { 
+                    padding: 20px !important; 
+                }
+                .preview-area {
+                    border: none !important;
+                    height: auto !important;
+                    padding: 0 !important;
+                    background: white !important;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    page-break-after: avoid !important;
+                    color: #333 !important;
+                }
+                table {
+                    page-break-inside: avoid !important;
+                    border-collapse: collapse !important;
+                }
+                img {
+                    max-width: 100% !important;
+                    height: auto !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    function printPreview() {
+        // Add print styling and print immediately
+        addPrintStyling();
+        window.print();
+    }
+    
+    // Add click handler that works better on iOS
+    function setupPrintButton() {
+        const printButton = document.querySelector('.btn-primary[onclick="printDocument()"]');
+        if (printButton) {
+            printButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                printDocument();
+            });
+        }
+    }
+    
+    // Initialize preview on page load
     document.addEventListener('DOMContentLoaded', function() {
         updatePreview();
+        setupPrintButton();
     });
 </script>
 ```
