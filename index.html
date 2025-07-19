@@ -478,26 +478,139 @@
         
         const htmlCode = document.getElementById('htmlEditor').value;
         
-        // Create a temporary element for PDF generation
-        const element = document.createElement('div');
-        element.innerHTML = htmlCode;
+        // Create a temporary container for PDF generation
+        const container = document.createElement('div');
+        container.style.cssText = `
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 794px;
+            min-height: 1123px;
+            padding: 40px;
+            box-sizing: border-box;
+            background: white;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        `;
         
-        // PDF options
+        // Extract content from HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlCode;
+        
+        // Get styles from the HTML
+        const styleElements = tempDiv.querySelectorAll('style');
+        let styles = '';
+        styleElements.forEach(style => {
+            styles += style.innerHTML + '\n';
+        });
+        
+        // Get body content
+        const bodyContent = tempDiv.querySelector('body') ? 
+            tempDiv.querySelector('body').innerHTML : 
+            htmlCode.replace(/<\/?html[^>]*>|<\/?head[^>]*>|<head[^>]*>[\s\S]*?<\/head>|<\/?body[^>]*>/gi, '');
+        
+        // Create properly formatted content
+        container.innerHTML = `
+            <style>
+                ${styles}
+                
+                /* PDF-specific formatting fixes */
+                * {
+                    word-wrap: break-word !important;
+                    overflow-wrap: break-word !important;
+                    hyphens: auto !important;
+                }
+                
+                body, div {
+                    max-width: 100% !important;
+                    overflow: visible !important;
+                }
+                
+                p, div, span {
+                    white-space: normal !important;
+                    word-break: break-word !important;
+                }
+                
+                blockquote, .quote {
+                    page-break-inside: avoid;
+                    margin: 20px 0;
+                    padding: 15px;
+                    border-left: 4px solid #007bff;
+                    background-color: #f8f9fa;
+                    font-style: italic;
+                }
+                
+                h1, h2, h3, h4, h5, h6 {
+                    page-break-after: avoid;
+                    margin-top: 25px;
+                    margin-bottom: 15px;
+                }
+                
+                table {
+                    width: 100% !important;
+                    table-layout: fixed !important;
+                    border-collapse: collapse !important;
+                }
+                
+                td, th {
+                    word-wrap: break-word !important;
+                    overflow-wrap: break-word !important;
+                    padding: 8px !important;
+                }
+                
+                @media print {
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                }
+            </style>
+            ${bodyContent}
+        `;
+        
+        document.body.appendChild(container);
+        
+        // Enhanced PDF options for better formatting
         const opt = {
-            margin: 0.5,
+            margin: [0.5, 0.5, 0.5, 0.5],
             filename: 'document.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            image: { 
+                type: 'jpeg', 
+                quality: 0.98 
+            },
+            html2canvas: { 
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                letterRendering: true,
+                width: 794,
+                height: container.scrollHeight
+            },
+            jsPDF: { 
+                unit: 'px', 
+                format: [794, 1123], 
+                orientation: 'portrait',
+                compress: true
+            },
+            pagebreak: { 
+                mode: ['avoid-all', 'css', 'legacy'] 
+            }
         };
         
-        // Generate PDF
-        html2pdf().set(opt).from(element).save().then(() => {
-            showStatus('PDF generated successfully!', 'success');
+        // Generate PDF with better formatting
+        html2pdf().set(opt).from(container).save().then(() => {
+            showStatus('PDF generated successfully with proper formatting!', 'success');
+            document.body.removeChild(container);
             button.disabled = false;
             button.innerHTML = '⬇️ Export PDF';
         }).catch((error) => {
             showStatus('Error generating PDF: ' + error.message, 'error');
+            if (document.body.contains(container)) {
+                document.body.removeChild(container);
+            }
             button.disabled = false;
             button.innerHTML = '⬇️ Export PDF';
         });
