@@ -1,903 +1,240 @@
-<!DOCTYPE html>
+import React, { useState } from ‘react’;
+import { FileText, Download, Eye, Code, Smartphone } from ‘lucide-react’;
 
-<html lang="en">
+const HtmlToPdfConverter = () => {
+const [htmlCode, setHtmlCode] = useState(`<!DOCTYPE html>
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML to PDF Converter</title>
+    <title>Sample Document</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            color: #333;
         }
-
-```
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 10px;
-    }
-    
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        overflow: hidden;
-    }
-    
-    .header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 25px;
-        text-align: center;
-    }
-    
-    .header h1 {
-        font-size: 1.8rem;
-        margin-bottom: 8px;
-    }
-    
-    .header p {
-        opacity: 0.9;
-        font-size: 1rem;
-    }
-    
-    .tabs {
-        display: flex;
-        background: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
-    
-    .tab-button {
-        flex: 1;
-        padding: 15px 10px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-        color: #666;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-    
-    .tab-button:hover {
-        background: #e9ecef;
-        color: #495057;
-    }
-    
-    .tab-button.active {
-        background: white;
-        color: #667eea;
-        font-weight: 600;
-    }
-    
-    .tab-button.active::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: #667eea;
-    }
-    
-    .content {
-        padding: 25px;
-    }
-    
-    .tab-content {
-        display: none;
-    }
-    
-    .tab-content.active {
-        display: block;
-    }
-    
-    .form-section {
-        margin-bottom: 25px;
-    }
-    
-    .form-section h3 {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 1.2rem;
-    }
-    
-    .textarea-container {
-        position: relative;
-    }
-    
-    #htmlCode {
-        width: 100%;
-        height: 350px;
-        padding: 15px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        font-size: 13px;
-        line-height: 1.5;
-        resize: vertical;
-        transition: border-color 0.3s ease;
-    }
-    
-    #htmlCode:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    .preview-area {
-        width: 100%;
-        height: 400px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        background: white;
-        overflow: auto;
-        padding: 20px;
-    }
-    
-    .button-group {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-    }
-    
-    .btn {
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        min-width: 140px;
-        user-select: none;
-    }
-    
-    .btn:active {
-        transform: translateY(1px);
-    }
-    
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-    }
-    
-    .btn-success {
-        background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
-        color: white;
-    }
-    
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(86, 171, 47, 0.3);
-    }
-    
-    .btn-warning {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-    }
-    
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
-    }
-    
-    .settings-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-    
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .form-group label {
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #333;
-        font-size: 14px;
-    }
-    
-    .form-group select {
-        padding: 10px 12px;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        font-size: 14px;
-        background: white;
-        transition: border-color 0.3s ease;
-    }
-    
-    .form-group select:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    .instructions-box {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .instructions-box h4 {
-        margin-bottom: 15px;
-        font-size: 1.1rem;
-    }
-    
-    .instructions-box ol {
-        margin-left: 20px;
-        line-height: 1.6;
-    }
-    
-    .instructions-box li {
-        margin-bottom: 8px;
-    }
-    
-    .tips-box {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 4px solid #667eea;
-    }
-    
-    .tips-box h4 {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 1.1rem;
-    }
-    
-    .tips-box ul {
-        margin-left: 20px;
-        line-height: 1.7;
-        color: #555;
-    }
-    
-    .tips-box li {
-        margin-bottom: 8px;
-    }
-    
-    @media (max-width: 768px) {
-        .container {
-            margin: 5px;
-            border-radius: 10px;
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
         }
-        
-        .header {
-            padding: 20px 15px;
-        }
-        
-        .header h1 {
-            font-size: 1.5rem;
-        }
-        
-        .content {
-            padding: 20px 15px;
-        }
-        
-        .tabs {
-            flex-direction: column;
-        }
-        
-        .tab-button {
-            text-align: center;
-        }
-        
-        .button-group {
-            flex-direction: column;
-        }
-        
-        .btn {
-            width: 100%;
-            min-width: auto;
-        }
-        
-        #htmlCode {
-            height: 250px;
-            font-size: 12px;
-        }
-        
-        .preview-area {
-            height: 300px;
-        }
-    }
-</style>
-```
-
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📄 HTML to PDF Converter</h1>
-            <p>Convert your HTML code to professional PDF documents</p>
-        </div>
-
-```
-    <div class="tabs">
-        <button class="tab-button active" data-tab="editor">✏️ HTML Editor</button>
-        <button class="tab-button" data-tab="preview">👁️ Preview</button>
-        <button class="tab-button" data-tab="settings">⚙️ Settings</button>
-    </div>
-    
-    <div class="content">
-        <!-- HTML Editor Tab -->
-        <div id="editor" class="tab-content active">
-            <div class="form-section">
-                <h3>HTML Code Editor</h3>
-                <div class="textarea-container">
-                    <textarea id="htmlCode" placeholder="Enter your HTML code here..."><!DOCTYPE html>
-```
-
-<html>
-<head>
-  <title>Professional Business Report</title>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      margin: 40px; 
-      line-height: 1.6; 
-      color: #333;
-    }
-    h1 { 
-      color: #2c3e50; 
-      border-bottom: 3px solid #3498db; 
-      padding-bottom: 10px; 
-      margin-bottom: 30px;
-    }
-    .highlight { 
-      background-color: #fff3cd; 
-      padding: 20px; 
-      border-left: 5px solid #ffc107; 
-      margin: 25px 0; 
-      border-radius: 5px;
-    }
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      margin: 25px 0; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    th, td { 
-      border: 1px solid #ddd; 
-      padding: 15px; 
-      text-align: left; 
-    }
-    th { 
-      background-color: #3498db; 
-      color: white; 
-      font-weight: bold; 
-    }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    .footer { 
-      margin-top: 50px; 
-      text-align: center; 
-      font-size: 14px; 
-      color: #7f8c8d; 
-      border-top: 2px solid #ecf0f1;
-      padding-top: 20px;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    li {
-      margin-bottom: 8px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Annual Business Performance Report</h1>
-
-  <div class="highlight">
-    <strong>Executive Summary:</strong> This comprehensive report showcases exceptional business growth and strategic achievements across all key performance indicators for the fiscal year.
-  </div>
-
-  <h2>Key Performance Indicators</h2>
-  <ul>
-    <li><strong>Revenue Growth:</strong> 32% increase year-over-year</li>
-    <li><strong>Customer Satisfaction:</strong> 96% positive feedback rating</li>
-    <li><strong>Market Expansion:</strong> Successfully entered 5 new markets</li>
-    <li><strong>Team Growth:</strong> 28 new talented employees joined</li>
-    <li><strong>Product Innovation:</strong> 3 major product launches</li>
-  </ul>
-
-  <h2>Quarterly Financial Performance</h2>
-  <table>
-    <tr>
-      <th>Metric</th>
-      <th>Q1 2024</th>
-      <th>Q2 2024</th>
-      <th>Q3 2024</th>
-      <th>Q4 2024</th>
-    </tr>
-    <tr>
-      <td>Revenue</td>
-      <td>$145,000</td>
-      <td>$167,000</td>
-      <td>$189,000</td>
-      <td>$203,000</td>
-    </tr>
-    <tr>
-      <td>Active Users</td>
-      <td>3,241</td>
-      <td>4,156</td>
-      <td>5,423</td>
-      <td>6,847</td>
-    </tr>
-    <tr>
-      <td>Conversion Rate</td>
-      <td>3.8%</td>
-      <td>4.2%</td>
-      <td>4.7%</td>
-      <td>5.1%</td>
-    </tr>
-  </table>
-
-  <h2>Strategic Initiatives & Future Outlook</h2>
-  <p>Our strategic focus for the upcoming year includes aggressive digital transformation, enhanced customer experience through AI-powered solutions, and sustainable business practices that align with environmental responsibilities.</p>
-
-  <p>The organization demonstrates strong momentum across all business units, with particular excellence in customer retention, operational efficiency, and innovative product development that positions us for continued market leadership.</p>
-
-  <div class="footer">
-    <p><strong>Document Generated:</strong> <span id="currentDate"></span></p>
-    <p>Confidential Business Document | All Rights Reserved</p>
-  </div>
-
-  <script>
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
-  </script>
-
-</body>
-</html></textarea>
-                    </div>
-                </div>
-
-```
-            <div class="button-group">
-                <button class="btn btn-primary" id="updateBtn">🔄 Update Preview</button>
-                <button class="btn btn-success" id="downloadBtn">📥 Download HTML</button>
-                <button class="btn btn-warning" id="printBtn">🖨️ Open Print Window</button>
-            </div>
-        </div>
-        
-        <!-- Preview Tab -->
-        <div id="preview" class="tab-content">
-            <div class="instructions-box">
-                <h4>📱 How to Save as PDF on iOS Safari:</h4>
-                <ol>
-                    <li>Use <strong>"Download HTML"</strong> button for best results</li>
-                    <li>Open downloaded file in Safari</li>
-                    <li>Tap Safari's <strong>Share</strong> button (square with arrow)</li>
-                    <li>Select <strong>"Print"</strong> from the menu</li>
-                    <li><strong>Pinch to zoom</strong> on the print preview</li>
-                    <li>Tap <strong>"Share"</strong> again → <strong>"Save to Books"</strong></li>
-                    <li>Your PDF will be saved in the Books app!</li>
-                </ol>
-            </div>
-            
-            <div class="form-section">
-                <h3>📄 Live Preview</h3>
-                <div id="previewArea" class="preview-area">
-                    <!-- Preview content will be loaded here -->
-                </div>
-            </div>
-            
-            <div class="button-group">
-                <button class="btn btn-success" id="downloadBtn2">📥 Download HTML</button>
-                <button class="btn btn-warning" id="printBtn2">🖨️ Open Print Window</button>
-            </div>
-        </div>
-        
-        <!-- Settings Tab -->
-        <div id="settings" class="tab-content">
-            <div class="form-section">
-                <h3>⚙️ PDF Generation Settings</h3>
-                
-                <div class="settings-grid">
-                    <div class="form-group">
-                        <label for="pageFormat">Page Format</label>
-                        <select id="pageFormat">
-                            <option value="A4">A4 (210 × 297 mm)</option>
-                            <option value="Letter">Letter (8.5 × 11 in)</option>
-                            <option value="Legal">Legal (8.5 × 14 in)</option>
-                            <option value="A3">A3 (297 × 420 mm)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="orientation">Orientation</label>
-                        <select id="orientation">
-                            <option value="portrait">Portrait</option>
-                            <option value="landscape">Landscape</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="margin">Page Margins</label>
-                        <select id="margin">
-                            <option value="0.5cm">Small (0.5cm)</option>
-                            <option value="1cm">Medium (1cm)</option>
-                            <option value="2cm">Large (2cm)</option>
-                            <option value="2.5cm">Extra Large (2.5cm)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tips-box">
-                <h4>💡 Professional PDF Tips</h4>
-                <ul>
-                    <li>Use semantic HTML elements (h1, h2, p, table, etc.) for better structure</li>
-                    <li>Include CSS styles for consistent formatting and colors</li>
-                    <li>Optimize images for print quality (high resolution)</li>
-                    <li>Use page-break CSS properties for better pagination control</li>
-                    <li>Test with different page sizes and orientations</li>
-                    <li>Keep text readable with good contrast ratios</li>
-                    <li>Use web-safe fonts for maximum compatibility</li>
-                    <li>Consider print-specific CSS with @media print rules</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Tab functionality
-    function initializeTabs() {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                
-                // Remove active class from all tabs and contents
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Add active class to clicked tab and corresponding content
-                this.classList.add('active');
-                document.getElementById(targetTab).classList.add('active');
-                
-                // Update preview if preview tab is selected
-                if (targetTab === 'preview') {
-                    updatePreview();
-                }
-            });
-        });
-    }
-    
-    // Preview functionality
-    function updatePreview() {
-        const htmlCode = document.getElementById('htmlCode').value;
-        const previewArea = document.getElementById('previewArea');
-        
-        try {
-            // Create temporary container to parse HTML
-            const tempContainer = document.createElement('div');
-            tempContainer.innerHTML = htmlCode;
-            
-            // Extract body content if present, otherwise use full HTML
-            const bodyElement = tempContainer.querySelector('body');
-            const contentToShow = bodyElement ? bodyElement.innerHTML : htmlCode;
-            
-            // Set preview content
-            previewArea.innerHTML = contentToShow;
-            
-            // Execute any scripts in the preview
-            const scripts = previewArea.querySelectorAll('script');
-            scripts.forEach(script => {
-                try {
-                    const newScript = document.createElement('script');
-                    newScript.textContent = script.textContent;
-                    script.parentNode.replaceChild(newScript, script);
-                } catch (e) {
-                    console.log('Script execution skipped for security');
-                }
-            });
-            
-        } catch (error) {
-            previewArea.innerHTML = '<p style="color: #e74c3c; padding: 20px; text-align: center;">❌ Error parsing HTML. Please check your code syntax.</p>';
-        }
-    }
-    
-    // Download HTML functionality
-    function downloadHTML() {
-        const htmlCode = document.getElementById('htmlCode').value;
-        const pageFormat = document.getElementById('pageFormat').value;
-        const orientation = document.getElementById('orientation').value;
-        const margin = document.getElementById('margin').value;
-        
-        // Enhanced print CSS
-        const printCSS = `
-<style>
-    @page {
-        size: ${pageFormat} ${orientation};
-        margin: ${margin};
-    }
-    @media print {
-        * {
-            -webkit-print-color-adjust: exact !important;
-            color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-        .no-print { 
-            display: none !important; 
-        }
-        .print-button {
-            display: none !important;
-        }
-    }
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        max-width: 100%;
-        margin: 0;
-        padding: 20px;
-        background: white;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        page-break-after: avoid;
-        margin-top: 0;
-    }
-    table {
-        page-break-inside: avoid;
-        width: 100%;
-    }
-    tr {
-        page-break-inside: avoid;
-    }
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-    .print-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 25px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-        text-align: center;
-    }
-    .print-header h3 {
-        margin-bottom: 10px;
-        font-size: 1.3rem;
-    }
-    .print-header p {
-        margin-bottom: 20px;
-        opacity: 0.9;
-    }
-    .print-button {
-        background: white;
-        color: #667eea;
-        border: none;
-        padding: 15px 30px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .print-button:hover {
-        background: #f8f9fa;
-        transform: translateY(-2px);
-    }
-    .document-footer {
-        margin-top: 40px;
-        text-align: center;
-        font-size: 12px;
-        color: #666;
-        border-top: 2px solid #eee;
-        padding-top: 20px;
-    }
-</style>`;
-        
-        // Parse the HTML to extract existing styles and body content
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlCode, 'text/html');
-        const existingStyles = doc.head ? doc.head.innerHTML : '';
-        const bodyContent = doc.body ? doc.body.innerHTML : htmlCode;
-        
-        // Create the complete HTML document
-        const completeHTML = `<!DOCTYPE html>
-```
-
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Ready Document</title>
-    ${existingStyles}
-    ${printCSS}
-</head>
-<body>
-    <div class="print-header no-print">
-        <h3>🖨️ Ready to Print!</h3>
-        <p><strong>iOS:</strong> Tap Share → Print → Save to Books</p>
-        <button class="print-button" onclick="window.print()">Print to PDF Now</button>
-    </div>
-
-```
-<div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #667eea; padding-bottom: 20px;">
-    <h2 style="color: #2c3e50; margin-bottom: 5px;">Generated PDF Document</h2>
-    <p style="color: #7f8c8d;">Created: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-</div>
-
-${bodyContent}
-
-<div class="document-footer">
-    <p><strong>Generated by HTML to PDF Converter</strong></p>
-    <p>Document created on ${new Date().toLocaleDateString()}</p>
-</div>
-```
-
-</body>
-</html>`;
-
-```
-        // Create and download the file
-        try {
-            const blob = new Blob([completeHTML], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `pdf-document-${Date.now()}.html`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            alert('✅ HTML file downloaded successfully!\n\n📱 iOS: Open the file in Safari and use the Print button to save as PDF to Books.');
-        } catch (error) {
-            alert('❌ Download failed. Please try again.');
-            console.error('Download error:', error);
-        }
-    }
-    
-    // Open print window functionality
-    function openPrintWindow() {
-        const htmlCode = document.getElementById('htmlCode').value;
-        const pageFormat = document.getElementById('pageFormat').value;
-        const orientation = document.getElementById('orientation').value;
-        const margin = document.getElementById('margin').value;
-        
-        // Create print-optimized HTML
-        const printHTML = `<!DOCTYPE html>
-```
-
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Document</title>
-    <style>
-        @page { 
-            size: ${pageFormat} ${orientation}; 
-            margin: ${margin}; 
-        }
-        @media print {
-            .no-print { display: none !important; }
-            * { -webkit-print-color-adjust: exact !important; }
-        }
-        body { 
-            font-family: Arial, sans-serif; 
-            line-height: 1.6; 
-            margin: 0; 
-            padding: 20px; 
-            background: white;
-        }
-        .print-header { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; 
-            padding: 25px; 
-            text-align: center; 
-            margin-bottom: 30px; 
-            border-radius: 10px;
-        }
-        .print-button {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 15px 0;
-            transition: all 0.3s ease;
-        }
-        .print-button:hover {
-            background: #667eea;
+        .highlight {
+            background-color: #f39c12;
             color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <div class="print-header no-print">
-        <h2>🖨️ Document Ready to Print</h2>
-        <p>Click below to open the print dialog</p>
-        <button class="print-button" onclick="window.print()">Print to PDF</button>
-    </div>
+    <h1>My Document</h1>
+    <p>This is a <span class="highlight">sample document</span> that will be converted to PDF.</p>
+    <p>You can include any HTML content here including:</p>
+    <ul>
+        <li>Lists and bullets</li>
+        <li>Styled text and colors</li>
+        <li>Headers and paragraphs</li>
+        <li>Tables and more</li>
+    </ul>
+</body>
+</html>`);
+
+const [previewMode, setPreviewMode] = useState(false);
+const [isGenerating, setIsGenerating] = useState(false);
+
+const generatePDF = () => {
+setIsGenerating(true);
 
 ```
-${htmlCode.includes('<body>') ? 
-    htmlCode.split('<body>')[1].split('</body>')[0] : 
-    htmlCode
+try {
+  // Create a hidden iframe to avoid popup blockers
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  
+  // Get the iframe's document
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  
+  // Write HTML content with PDF-optimized styles
+  const pdfOptimizedHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        @media print {
+          body { 
+            margin: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          @page { 
+            margin: 0.75in;
+            size: A4;
+          }
+        }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+          line-height: 1.4;
+          color: #000;
+        }
+      </style>
+    </head>
+    <body>
+      ${htmlCode.replace(/<!DOCTYPE html>|<html[^>]*>|<\/html>|<head[^>]*>[\s\S]*?<\/head>|<body[^>]*>|<\/body>/gi, '')}
+    </body>
+    </html>
+  `;
+  
+  iframeDoc.open();
+  iframeDoc.write(pdfOptimizedHtml);
+  iframeDoc.close();
+  
+  // Wait a moment for content to render, then print
+  setTimeout(() => {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } catch (e) {
+      // Fallback: try direct print
+      window.print();
+    }
+    
+    // Clean up iframe after a delay
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+      setIsGenerating(false);
+    }, 1000);
+  }, 500);
+  
+} catch (error) {
+  console.error('Error generating PDF:', error);
+  alert('Error generating PDF. Please try again.');
+  setIsGenerating(false);
 }
 ```
 
-</body>
-</html>`;
+};
+
+const togglePreview = () => {
+setPreviewMode(!previewMode);
+};
+
+return (
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+<div className="max-w-6xl mx-auto">
+{/* Header */}
+<div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+<div className="flex items-center justify-between flex-wrap gap-4">
+<div className="flex items-center space-x-3">
+<div className="bg-blue-500 p-3 rounded-lg">
+<FileText className="text-white w-6 h-6" />
+</div>
+<div>
+<h1 className="text-2xl font-bold text-gray-800">HTML to PDF Converter</h1>
+<p className="text-gray-600 flex items-center gap-2 mt-1">
+<Smartphone className="w-4 h-4" />
+iOS Compatible
+</p>
+</div>
+</div>
 
 ```
-        // Open in new window
-        try {
-            const newWindow = window.open('', '_blank', 'width=800,height=600');
-            if (newWindow) {
-                newWindow.document.open();
-                newWindow.document.write(printHTML);
-                newWindow.document.close();
-            } else {
-                alert('❌ Pop-up blocked. Please allow pop-ups or use the Download HTML option.');
-            }
-        } catch (error) {
-            alert('❌ Unable to open print window. Please use the Download HTML option.');
-            console.error('Print window error:', error);
-        }
-    }
-    
-    // Event listeners
-    function initializeEventListeners() {
-        // Update preview button
-        const updateBtn = document.getElementById('updateBtn');
-        if (updateBtn) {
-            updateBtn.addEventListener('click', updatePreview);
-        }
-        
-        // Download buttons
-        const downloadBtn1 = document.getElementById('downloadBtn');
-        const downloadBtn2 = document.getElementById('downloadBtn2');
-        if (downloadBtn1) downloadBtn1.addEventListener('click', downloadHTML);
-        if (downloadBtn2) downloadBtn2.addEventListener('click', downloadHTML);
-        
-        // Print buttons
-        const printBtn1 = document.getElementById('printBtn');
-        const printBtn2 = document.getElementById('printBtn2');
-        if (printBtn1) printBtn1.addEventListener('click', openPrintWindow);
-        if (printBtn2) printBtn2.addEventListener('click', openPrintWindow);
-    }
-    
-    // Initialize everything when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('HTML to PDF Converter loaded successfully');
-        
-        // Initialize all functionality
-        initializeTabs();
-        initializeEventListeners();
-        updatePreview();
-        
-        console.
+        <div className="flex space-x-3">
+          <button
+            onClick={togglePreview}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
+              previewMode 
+                ? 'bg-gray-500 text-white' 
+                : 'bg-green-500 text-white hover:bg-green-600'
+            }`}
+          >
+            {previewMode ? <Code className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            <span>{previewMode ? 'Edit HTML' : 'Preview'}</span>
+          </button>
+          
+          <button
+            onClick={generatePDF}
+            disabled={isGenerating}
+            className="flex items-center space-x-2 bg-blue-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download className="w-4 h-4" />
+            <span>{isGenerating ? 'Generating...' : 'Export PDF'}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {/* Main Content */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* HTML Editor */}
+      <div className={`${previewMode ? 'hidden lg:block' : ''}`}>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gray-50 px-6 py-4 border-b">
+            <h2 className="font-semibold text-gray-800 flex items-center gap-2">
+              <Code className="w-5 h-5" />
+              HTML Editor
+            </h2>
+          </div>
+          <div className="p-6">
+            <textarea
+              value={htmlCode}
+              onChange={(e) => setHtmlCode(e.target.value)}
+              className="w-full h-96 font-mono text-sm border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              placeholder="Enter your HTML code here..."
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Preview */}
+      <div className={`${!previewMode ? 'hidden lg:block' : ''}`}>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gray-50 px-6 py-4 border-b">
+            <h2 className="font-semibold text-gray-800 flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              Preview
+            </h2>
+          </div>
+          <div className="p-6">
+            <div 
+              className="border border-gray-200 rounded-lg p-4 bg-white min-h-96 overflow-auto"
+              dangerouslySetInnerHTML={{ __html: htmlCode }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Instructions */}
+    <div className="bg-white rounded-xl shadow-lg p-6 mt-6">
+      <h3 className="font-semibold text-gray-800 mb-4">How to use on iOS:</h3>
+      <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-600">
+        <div>
+          <h4 className="font-medium text-gray-800 mb-2">Step 1: Edit HTML</h4>
+          <p>Paste or write your HTML code in the editor. You can include CSS styles within &lt;style&gt; tags.</p>
+        </div>
+        <div>
+          <h4 className="font-medium text-gray-800 mb-2">Step 2: Preview</h4>
+          <p>Use the Preview button to see how your HTML will look when converted to PDF.</p>
+        </div>
+        <div>
+          <h4 className="font-medium text-gray-800 mb-2">Step 3: Export PDF</h4>
+          <p>Click "Export PDF" to open the print dialog. On iOS, select "Save to Files" or "Save PDF to Books".</p>
+        </div>
+        <div>
+          <h4 className="font-medium text-gray-800 mb-2">iOS Tips</h4>
+          <p>In Safari, you can also use Share → "Create PDF" from any preview for additional options.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 ```
+
+);
+};
+
+export default HtmlToPdfConverter;
