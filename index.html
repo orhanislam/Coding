@@ -478,64 +478,73 @@
         
         const htmlCode = document.getElementById('htmlEditor').value;
         
-        // Create a temporary container for PDF generation
+        // Create a visible container for PDF generation (this fixes blank page issue)
         const container = document.createElement('div');
         container.style.cssText = `
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 794px;
-            min-height: 1123px;
-            padding: 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
             box-sizing: border-box;
             background: white;
             font-family: Arial, sans-serif;
             line-height: 1.6;
             color: #333;
+            z-index: 9999;
+            overflow: visible;
             word-wrap: break-word;
-            overflow-wrap: break-word;
         `;
         
-        // Extract content from HTML
+        // Extract and clean the HTML content
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlCode;
         
-        // Get styles from the HTML
+        // Get styles
         const styleElements = tempDiv.querySelectorAll('style');
         let styles = '';
         styleElements.forEach(style => {
             styles += style.innerHTML + '\n';
         });
         
-        // Get body content
-        const bodyContent = tempDiv.querySelector('body') ? 
-            tempDiv.querySelector('body').innerHTML : 
-            htmlCode.replace(/<\/?html[^>]*>|<\/?head[^>]*>|<head[^>]*>[\s\S]*?<\/head>|<\/?body[^>]*>/gi, '');
+        // Get body content or use entire HTML if no body tag
+        let bodyContent = '';
+        const bodyElement = tempDiv.querySelector('body');
+        if (bodyElement) {
+            bodyContent = bodyElement.innerHTML;
+        } else {
+            // Remove html, head, body tags but keep content
+            bodyContent = htmlCode.replace(/<!DOCTYPE[^>]*>/gi, '')
+                               .replace(/<\/?html[^>]*>/gi, '')
+                               .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '')
+                               .replace(/<\/?body[^>]*>/gi, '');
+        }
         
-        // Create properly formatted content
+        // Create the content with improved styling
         container.innerHTML = `
             <style>
-                ${styles}
-                
-                /* PDF-specific formatting fixes */
                 * {
-                    word-wrap: break-word !important;
-                    overflow-wrap: break-word !important;
-                    hyphens: auto !important;
+                    box-sizing: border-box;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
                 }
                 
-                body, div {
-                    max-width: 100% !important;
-                    overflow: visible !important;
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
                 }
                 
-                p, div, span {
-                    white-space: normal !important;
-                    word-break: break-word !important;
+                p, div, span, blockquote {
+                    max-width: 100%;
+                    word-break: break-word;
+                    hyphens: auto;
                 }
                 
-                blockquote, .quote {
-                    page-break-inside: avoid;
+                blockquote {
                     margin: 20px 0;
                     padding: 15px;
                     border-left: 4px solid #007bff;
@@ -544,76 +553,71 @@
                 }
                 
                 h1, h2, h3, h4, h5, h6 {
-                    page-break-after: avoid;
-                    margin-top: 25px;
-                    margin-bottom: 15px;
+                    margin: 20px 0 15px 0;
+                    color: #2c3e50;
                 }
                 
                 table {
-                    width: 100% !important;
-                    table-layout: fixed !important;
-                    border-collapse: collapse !important;
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 15px 0;
                 }
                 
                 td, th {
-                    word-wrap: break-word !important;
-                    overflow-wrap: break-word !important;
-                    padding: 8px !important;
+                    padding: 8px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
                 }
                 
-                @media print {
-                    * {
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                    }
-                }
+                ${styles}
             </style>
-            ${bodyContent}
+            <div style="width: 100%; overflow: visible;">
+                ${bodyContent}
+            </div>
         `;
         
+        // Add to document temporarily
         document.body.appendChild(container);
         
-        // Enhanced PDF options for better formatting
-        const opt = {
-            margin: [0.5, 0.5, 0.5, 0.5],
-            filename: 'document.pdf',
-            image: { 
-                type: 'jpeg', 
-                quality: 0.98 
-            },
-            html2canvas: { 
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                letterRendering: true,
-                width: 794,
-                height: container.scrollHeight
-            },
-            jsPDF: { 
-                unit: 'px', 
-                format: [794, 1123], 
-                orientation: 'portrait',
-                compress: true
-            },
-            pagebreak: { 
-                mode: ['avoid-all', 'css', 'legacy'] 
-            }
-        };
-        
-        // Generate PDF with better formatting
-        html2pdf().set(opt).from(container).save().then(() => {
-            showStatus('PDF generated successfully with proper formatting!', 'success');
-            document.body.removeChild(container);
-            button.disabled = false;
-            button.innerHTML = '⬇️ Export PDF';
-        }).catch((error) => {
-            showStatus('Error generating PDF: ' + error.message, 'error');
-            if (document.body.contains(container)) {
+        // Wait for content to render, then generate PDF
+        setTimeout(() => {
+            const opt = {
+                margin: 0.8,
+                filename: 'document.pdf',
+                image: { 
+                    type: 'jpeg', 
+                    quality: 0.95 
+                },
+                html2canvas: { 
+                    scale: 1.5,
+                    useCORS: true,
+                    allowTaint: true,
+                    letterRendering: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'in', 
+                    format: 'a4', 
+                    orientation: 'portrait'
+                }
+            };
+            
+            html2pdf().set(opt).from(container).save().then(() => {
+                showStatus('PDF generated successfully!', 'success');
                 document.body.removeChild(container);
-            }
-            button.disabled = false;
-            button.innerHTML = '⬇️ Export PDF';
-        });
+                button.disabled = false;
+                button.innerHTML = '⬇️ Export PDF';
+            }).catch((error) => {
+                showStatus('Error generating PDF: ' + error.message, 'error');
+                console.error('PDF Generation Error:', error);
+                if (document.body.contains(container)) {
+                    document.body.removeChild(container);
+                }
+                button.disabled = false;
+                button.innerHTML = '⬇️ Export PDF';
+            });
+        }, 500); // Give time for content to render
     }
 
     async function askClaude() {
