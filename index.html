@@ -478,26 +478,17 @@
         
         const htmlCode = document.getElementById('htmlEditor').value;
         
-        // Create a visible container for PDF generation (this fixes blank page issue)
-        const container = document.createElement('div');
-        container.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            box-sizing: border-box;
-            background: white;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            z-index: 9999;
-            overflow: visible;
-            word-wrap: break-word;
-        `;
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank');
         
-        // Extract and clean the HTML content
+        if (!printWindow) {
+            alert('Please allow popups to generate PDFs. Check your browser settings.');
+            button.disabled = false;
+            button.innerHTML = '⬇️ Export PDF';
+            return;
+        }
+        
+        // Extract content and styles
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlCode;
         
@@ -508,116 +499,207 @@
             styles += style.innerHTML + '\n';
         });
         
-        // Get body content or use entire HTML if no body tag
+        // Get body content
         let bodyContent = '';
         const bodyElement = tempDiv.querySelector('body');
         if (bodyElement) {
             bodyContent = bodyElement.innerHTML;
         } else {
-            // Remove html, head, body tags but keep content
             bodyContent = htmlCode.replace(/<!DOCTYPE[^>]*>/gi, '')
                                .replace(/<\/?html[^>]*>/gi, '')
                                .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '')
                                .replace(/<\/?body[^>]*>/gi, '');
         }
         
-        // Create the content with improved styling
-        container.innerHTML = `
-            <style>
-                * {
-                    box-sizing: border-box;
-                    word-wrap: break-word;
-                    overflow-wrap: break-word;
-                }
-                
-                body {
-                    margin: 0;
-                    padding: 0;
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                }
-                
-                p, div, span, blockquote {
-                    max-width: 100%;
-                    word-break: break-word;
-                    hyphens: auto;
-                }
-                
-                blockquote {
-                    margin: 20px 0;
-                    padding: 15px;
-                    border-left: 4px solid #007bff;
-                    background-color: #f8f9fa;
-                    font-style: italic;
-                }
-                
-                h1, h2, h3, h4, h5, h6 {
-                    margin: 20px 0 15px 0;
-                    color: #2c3e50;
-                }
-                
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 15px 0;
-                }
-                
-                td, th {
-                    padding: 8px;
-                    text-align: left;
-                    border: 1px solid #ddd;
-                    word-wrap: break-word;
-                }
-                
-                ${styles}
-            </style>
-            <div style="width: 100%; overflow: visible;">
-                ${bodyContent}
-            </div>
-        `;
+        // Create optimized HTML for PDF
+        const printHTML = `
+```
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Base styles for PDF */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        padding: 40px;
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    /* Print-specific styles */
+    @media print {
+        body {
+            margin: 0;
+            padding: 20mm;
+            font-size: 12pt;
+            line-height: 1.5;
+        }
         
-        // Add to document temporarily
-        document.body.appendChild(container);
+        @page {
+            margin: 20mm;
+            size: A4;
+        }
         
-        // Wait for content to render, then generate PDF
+        h1, h2, h3, h4, h5, h6 {
+            page-break-after: avoid;
+            margin-top: 20pt;
+            margin-bottom: 10pt;
+        }
+        
+        p, div {
+            orphans: 3;
+            widows: 3;
+        }
+        
+        blockquote {
+            page-break-inside: avoid;
+            margin: 15pt 0;
+            padding: 10pt;
+            border-left: 3pt solid #007bff;
+            background-color: #f8f9fa !important;
+            font-style: italic;
+        }
+        
+        table {
+            page-break-inside: avoid;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        td, th {
+            padding: 6pt;
+            border: 1pt solid #ddd;
+            text-align: left;
+        }
+        
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+    }
+    
+    /* Screen styles */
+    @media screen {
+        body {
+            background: white;
+            min-height: 100vh;
+        }
+    }
+    
+    /* Content styles */
+    h1, h2, h3, h4, h5, h6 {
+        color: #2c3e50;
+        margin: 20px 0 15px 0;
+    }
+    
+    p {
+        margin: 15px 0;
+        text-align: justify;
+        hyphens: auto;
+    }
+    
+    blockquote {
+        margin: 20px 0;
+        padding: 15px;
+        border-left: 4px solid #007bff;
+        background-color: #f8f9fa;
+        font-style: italic;
+        border-radius: 4px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    
+    td, th {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+        word-wrap: break-word;
+    }
+    
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    
+    ul, ol {
+        margin: 15px 0;
+        padding-left: 30px;
+    }
+    
+    li {
+        margin: 5px 0;
+    }
+    
+    /* Custom styles from user */
+    ${styles}
+    
+    /* Override any problematic styles for PDF */
+    * {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    
+    div, p, span {
+        max-width: 100% !important;
+    }
+</style>
+```
+
+</head>
+<body>
+    ${bodyContent}
+
+```
+<script>
+    // Auto-print when page loads
+    window.onload = function() {
+        setTimeout(function() {
+            window.print();
+        }, 500);
+    };
+    
+    // Close window after printing (optional)
+    window.onafterprint = function() {
+        setTimeout(function() {
+            window.close();
+        }, 1000);
+    };
+</script>
+```
+
+</body>
+</html>`;
+
+```
+        // Write content to new window
+        printWindow.document.write(printHTML);
+        printWindow.document.close();
+        
+        // Reset button
         setTimeout(() => {
-            const opt = {
-                margin: 0.8,
-                filename: 'document.pdf',
-                image: { 
-                    type: 'jpeg', 
-                    quality: 0.95 
-                },
-                html2canvas: { 
-                    scale: 1.5,
-                    useCORS: true,
-                    allowTaint: true,
-                    letterRendering: true,
-                    logging: false
-                },
-                jsPDF: { 
-                    unit: 'in', 
-                    format: 'a4', 
-                    orientation: 'portrait'
-                }
-            };
-            
-            html2pdf().set(opt).from(container).save().then(() => {
-                showStatus('PDF generated successfully!', 'success');
-                document.body.removeChild(container);
-                button.disabled = false;
-                button.innerHTML = '⬇️ Export PDF';
-            }).catch((error) => {
-                showStatus('Error generating PDF: ' + error.message, 'error');
-                console.error('PDF Generation Error:', error);
-                if (document.body.contains(container)) {
-                    document.body.removeChild(container);
-                }
-                button.disabled = false;
-                button.innerHTML = '⬇️ Export PDF';
-            });
-        }, 500); // Give time for content to render
+            button.disabled = false;
+            button.innerHTML = '⬇️ Export PDF';
+            showStatus('Print dialog opened! On iOS: tap Share → Save to Files to create PDF', 'success');
+        }, 1000);
     }
 
     async function askClaude() {
