@@ -869,150 +869,108 @@
         
         const htmlCode = document.getElementById('htmlEditor').value;
         
-        // Create a temporary container to measure actual heights
-        const tempContainer = document.createElement('div');
-        tempContainer.style.position = 'absolute';
-        tempContainer.style.left = '-9999px';
-        tempContainer.style.top = '0';
-        tempContainer.style.width = '210mm'; // A4 width
-        tempContainer.style.visibility = 'hidden';
-        tempContainer.innerHTML = htmlCode;
-        document.body.appendChild(tempContainer);
+        // Simple check if we have content
+        if (!htmlCode.trim()) {
+            showStatus('Please add some content to export!', 'error');
+            button.disabled = false;
+            button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+            return;
+        }
         
         try {
-            button.innerHTML = '⏳ Calculating page breaks...';
-            
-            // Find all divs that need protection in the temp container
-            const divsToProtect = tempContainer.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break)');
-            console.log('Found divs to protect:', divsToProtect.length);
-            
-            let currentPageHeight = 0;
-            const maxPageHeight = 900; // Safe page height in pixels for A4
-            let pageBreaksInserted = 0;
-            
-            divsToProtect.forEach((div, index) => {
-                // Force the div to be visible for height calculation
-                div.style.display = 'block';
-                div.style.visibility = 'visible';
-                
-                // Get the actual height of this div
-                const divHeight = div.offsetHeight || div.scrollHeight || 100;
-                const safeHeight = divHeight + 20; // Add buffer
-                
-                console.log(`Div ${index}: height=${divHeight}px, current page height=${currentPageHeight}px`);
-                
-                // Check if this div would cause page overflow
-                if (currentPageHeight > 0 && (currentPageHeight + safeHeight) > maxPageHeight) {
-                    console.log(`Inserting page break before div ${index}`);
-                    
-                    // Insert a manual page break before this div
-                    const pageBreak = document.createElement('div');
-                    pageBreak.className = 'manual-page-break';
-                    pageBreak.style.pageBreakBefore = 'always';
-                    pageBreak.style.breakBefore = 'page';
-                    pageBreak.style.height = '1px';
-                    pageBreak.style.visibility = 'hidden';
-                    pageBreak.style.margin = '0';
-                    pageBreak.style.padding = '0';
-                    pageBreak.innerHTML = '<!-- Page Break -->';
-                    
-                    // Insert before the div
-                    div.parentNode.insertBefore(pageBreak, div);
-                    pageBreaksInserted++;
-                    
-                    // Reset page height for new page
-                    currentPageHeight = safeHeight;
-                } else {
-                    // Add to current page
-                    currentPageHeight += safeHeight;
-                }
-            });
-            
-            console.log(`Inserted ${pageBreaksInserted} manual page breaks`);
             button.innerHTML = '⏳ Generating PDF...';
+            console.log('Starting PDF generation...');
             
-            // Get the processed HTML with page breaks
-            const processedHTML = tempContainer.innerHTML;
-            
-            // Create final element for PDF generation
+            // Create element for PDF generation
             const element = document.createElement('div');
-            element.innerHTML = processedHTML;
+            element.innerHTML = htmlCode;
+            element.style.width = '210mm';
+            element.style.minHeight = '297mm';
+            element.style.margin = '0 auto';
+            element.style.padding = '20mm';
+            element.style.backgroundColor = 'white';
+            element.style.fontFamily = 'Arial, sans-serif';
             
-            // Simple PDF options that work reliably
+            // Enhanced PDF options for reliability
             const opt = {
-                margin: [0.3, 0.3, 0.3, 0.3],
-                filename: `document-${format}.pdf`,
+                margin: [margin, margin, margin, margin],
+                filename: `document-${format}-${Date.now()}.pdf`,
                 image: { 
                     type: 'jpeg', 
-                    quality: 0.95
+                    quality: 0.98
                 },
                 html2canvas: { 
-                    scale: 1.0, // Lower scale for better compatibility
+                    scale: 1.0, // Reliable scale
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: '#ffffff',
-                    logging: true,
+                    logging: false, // Disable logging for stability
                     scrollX: 0,
                     scrollY: 0,
+                    windowWidth: 794, // A4 width
+                    windowHeight: 1123, // A4 height
                     onclone: function(clonedDoc) {
-                        console.log('Applying final styles to cloned document...');
+                        console.log('Processing cloned document...');
                         
-                        // Apply page break styles
-                        const manualBreaks = clonedDoc.querySelectorAll('.manual-page-break, .page-break');
-                        manualBreaks.forEach(pb => {
-                            pb.style.pageBreakBefore = 'always';
-                            pb.style.breakBefore = 'page';
-                            pb.style.display = 'block';
-                            pb.style.height = '1px';
-                            pb.style.visibility = 'hidden';
-                            pb.style.margin = '0';
-                            pb.style.padding = '0';
-                        });
-                        
-                        // Still apply div protection as backup
-                        const allDivs = clonedDoc.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break):not(.manual-page-break)');
-                        allDivs.forEach(div => {
-                            div.style.pageBreakInside = 'avoid';
-                            div.style.breakInside = 'avoid';
-                            div.style.overflow = 'visible';
-                        });
-                        
-                        console.log('Final styles applied');
+                        try {
+                            // Apply div protection
+                            const contentDivs = clonedDoc.querySelectorAll('div');
+                            contentDivs.forEach(div => {
+                                if (!div.className.includes('manual-page-break')) {
+                                    div.style.pageBreakInside = 'avoid';
+                                    div.style.breakInside = 'avoid';
+                                    div.style.overflow = 'visible';
+                                }
+                            });
+                            
+                            // Ensure proper styling
+                            clonedDoc.body.style.margin = '0';
+                            clonedDoc.body.style.padding = '0';
+                            clonedDoc.body.style.backgroundColor = '#ffffff';
+                            
+                            console.log('Document processing complete');
+                        } catch (error) {
+                            console.error('Error in onclone:', error);
+                        }
                     }
                 },
                 jsPDF: { 
                     unit: 'in',
                     format: format, 
-                    orientation: orientation
+                    orientation: orientation,
+                    compress: true
                 },
                 pagebreak: { 
                     mode: ['css', 'legacy'],
-                    before: ['.page-break', '.manual-page-break'],
-                    avoid: 'div:not(.page-container):not(.content-wrapper)'
+                    avoid: 'div'
                 }
             };
             
-            // Generate PDF
-            html2pdf().set(opt).from(element).save().then(() => {
-                console.log(`PDF generated successfully with ${pageBreaksInserted} page breaks`);
-                showStatus(`${format.toUpperCase()} PDF generated with ${pageBreaksInserted} automatic page breaks!`, 'success');
-                button.disabled = false;
-                button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
-            }).catch((error) => {
-                console.error('PDF Generation Error:', error);
-                showStatus('Error generating PDF: ' + error.message, 'error');
-                button.disabled = false;
-                button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
-            });
+            // Generate PDF with error handling
+            html2pdf().set(opt).from(element).save()
+                .then(() => {
+                    console.log('PDF generated successfully!');
+                    showStatus(`✅ ${format.toUpperCase()} PDF generated successfully!`, 'success');
+                    button.disabled = false;
+                    button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+                })
+                .catch((error) => {
+                    console.error('PDF Generation Error:', error);
+                    showStatus(`❌ PDF Error: ${error.message}`, 'error');
+                    button.disabled = false;
+                    button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+                    
+                    // Provide helpful suggestions
+                    if (error.message.includes('canvas') || error.message.includes('CORS')) {
+                        showStatus('Try: 1) Refresh page 2) Use simpler HTML 3) Run locally instead of GitHub Pages', 'info');
+                    }
+                });
             
         } catch (error) {
             console.error('Pre-processing error:', error);
-            showStatus('Error in pre-processing: ' + error.message, 'error');
+            showStatus(`❌ Error: ${error.message}`, 'error');
             button.disabled = false;
             button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
-        } finally {
-            // Clean up temporary container
-            document.body.removeChild(tempContainer);
         }
     }
 
