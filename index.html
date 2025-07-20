@@ -462,10 +462,38 @@
     
     .page-break {
         page-break-before: always;
+        break-before: page;
+    }
+    
+    .page-break-after {
+        page-break-after: always;
+        break-after: page;
     }
     
     .no-break {
         page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    /* Ensure content flows properly */
+    * {
+        box-sizing: border-box;
+    }
+    
+    /* PDF-specific adjustments */
+    @media print {
+        body {
+            margin: 0 !important;
+            padding: 30mm !important;
+        }
+        
+        .page-break {
+            page-break-before: always !important;
+        }
+        
+        .no-break {
+            page-break-inside: avoid !important;
+        }
     }
 </style>
 ```
@@ -535,12 +563,35 @@
     
     <p>A4 format ensures consistent layout across different devices and printers, making it ideal for:</p>
     <ul>
-        <li>Business documents</li>
-        <li>Reports and proposals</li>
+        <li>Business documents and reports</li>
+        <li>Academic papers and research</li>
         <li>Invoices and contracts</li>
-        <li>Academic papers</li>
         <li>Official correspondence</li>
+        <li>Technical documentation</li>
     </ul>
+    
+    <div class="no-break">
+        <h2>Multi-Page Support</h2>
+        <p>This PDF converter now properly handles multiple pages, ensuring all your content is captured regardless of document length.</p>
+        
+        <div class="info-box">
+            <h3>Key Benefits:</h3>
+            <ul>
+                <li>✅ All pages exported correctly</li>
+                <li>✅ Proper page breaks</li>
+                <li>✅ Consistent formatting</li>
+                <li>✅ Professional appearance</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="page-break">
+    <h1>Third Page</h1>
+    <p>This demonstrates that the PDF export now correctly handles multiple pages and long documents.</p>
+    
+    <h2>Testing Multi-Page Export</h2>
+    <p>You can add as much content as needed, and the PDF will include all pages with proper formatting and margins.</p>
 </div>
 ```
 
@@ -658,45 +709,61 @@
         const element = document.createElement('div');
         element.innerHTML = htmlCode;
         
-        // A4 optimized PDF options with extra safe margins
+        // Create a wrapper div for better PDF generation
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = `
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0;
+            padding: 0;
+            background: white;
+            font-family: Arial, sans-serif;
+            color: #333;
+            overflow: visible;
+        `;
+        wrapper.innerHTML = htmlCode;
+        
+        // A4 optimized PDF options with multi-page support
         const opt = {
-            margin: [margin, margin, margin, margin], // Top, Right, Bottom, Left margins
+            margin: [margin, margin, margin, margin],
             filename: `document-${format}.pdf`,
             image: { 
                 type: 'jpeg', 
-                quality: 0.95 
+                quality: 0.92
             },
             html2canvas: { 
-                scale: 1.5, // Reduced scale for better margin handling
+                scale: 1.2,
                 useCORS: true,
-                letterRendering: true,
                 allowTaint: false,
-                dpi: 96, // Standard DPI for better compatibility
+                backgroundColor: '#ffffff',
                 logging: false,
-                width: 595, // A4 width in points (8.27" * 72)
-                height: 842, // A4 height in points (11.69" * 72)
                 scrollX: 0,
-                scrollY: 0
+                scrollY: 0,
+                windowWidth: 794,
+                windowHeight: 1123,
+                onclone: function(clonedDoc) {
+                    // Ensure all content is visible in the clone
+                    clonedDoc.body.style.height = 'auto';
+                    clonedDoc.body.style.overflow = 'visible';
+                }
             },
             jsPDF: { 
-                unit: 'in', // Using inches for better margin control
+                unit: 'in',
                 format: format, 
                 orientation: orientation,
-                putOnlyUsedFonts: true,
-                floatPrecision: 16,
-                compress: true
+                hotfixes: ['px_scaling']
             },
             pagebreak: { 
-                mode: ['avoid-all', 'css', 'legacy'],
+                mode: ['css', 'legacy'],
                 before: '.page-break',
                 after: '.page-break-after',
                 avoid: '.no-break'
             }
         };
         
-        // Generate PDF with A4 optimization
-        html2pdf().set(opt).from(element).save().then(() => {
-            showStatus(`${format.toUpperCase()} PDF generated successfully! Perfect for printing and sharing.`, 'success');
+        // Generate PDF with multi-page support
+        html2pdf().set(opt).from(wrapper).save().then(() => {
+            showStatus(`${format.toUpperCase()} PDF with all pages generated successfully!`, 'success');
             button.disabled = false;
             button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
         }).catch((error) => {
