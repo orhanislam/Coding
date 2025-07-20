@@ -498,8 +498,11 @@
                     <button class="btn btn-primary" onclick="generatePDF()" id="exportBtn">
                         ⬇️ Export PDF (A4)
                     </button>
-                    <button class="btn btn-secondary" onclick="testPDFLibrary()" id="testBtn" style="font-size: 12px; padding: 8px 16px;">
-                        🔍 Test PDF Library
+                    <button class="btn btn-secondary" onclick="simplePDFTest()" id="simpleTestBtn" style="font-size: 12px; padding: 8px 16px;">
+                        🧪 Simple Test
+                    </button>
+                    <button class="btn btn-ai" onclick="debugInfo()" id="debugBtn" style="font-size: 12px; padding: 8px 16px;">
+                        🐛 Debug Info
                     </button>
                 </div>
             </div>
@@ -795,23 +798,23 @@
 
     <!-- Instructions -->
     <div class="instructions">
-        <h3>📋 Enhanced HTML Editor Guide</h3>
+        <h3>📋 Enhanced Editor & PDF Troubleshooting</h3>
         <div class="instructions-grid">
             <div class="instruction-item">
                 <h4>🚀 Quick Start</h4>
                 <p>Select a template from the dropdown to get started quickly. Use the toolbar buttons to insert HTML elements like headings, paragraphs, quote boxes, and more with just one click!</p>
             </div>
             <div class="instruction-item">
-                <h4>🎨 Editor Features</h4>
-                <p>The enhanced editor includes line numbers, word count, syntax highlighting, HTML formatting, validation, and real-time preview. Perfect for writing HTML directly in the app!</p>
+                <h4>🐛 Troubleshooting PDF Export</h4>
+                <p><strong>Export PDF:</strong> Main export with full features. <strong>Simple Test:</strong> Minimal test to check if PDF works at all. <strong>Debug Info:</strong> Shows detailed system information to help diagnose issues.</p>
             </div>
             <div class="instruction-item">
                 <h4>📄 Smart Templates</h4>
                 <p>Choose from pre-built templates: Hadith documents, invoices, business letters, reports, or start with a basic/empty template. Each template includes optimized CSS for PDF export.</p>
             </div>
             <div class="instruction-item">
-                <h4>🔧 Advanced Tools</h4>
-                <p>Use Format to clean up your HTML, Validate to check for errors, and the toolbar buttons to quickly insert elements. The editor automatically updates the preview as you type!</p>
+                <h4>🔧 If PDF Export Fails</h4>
+                <p><strong>Step 1:</strong> Click "Debug Info" to see what's wrong. <strong>Step 2:</strong> Try "Simple Test" with minimal content. <strong>Step 3:</strong> Check browser console (F12) for errors. <strong>Step 4:</strong> Try different browser or disable popup blocker.</p>
             </div>
         </div>
     </div>
@@ -858,119 +861,219 @@
         }
     }
 
+    // Enhanced PDF generation with detailed debugging
     function generatePDF() {
+        console.log('=== PDF GENERATION DEBUG START ===');
+        
         const button = document.getElementById('exportBtn');
         const format = document.getElementById('formatSelect').value;
         const orientation = document.getElementById('orientationSelect').value;
         const margin = parseFloat(document.getElementById('marginSelect').value);
         
+        // Step 1: Check if html2pdf is loaded
+        console.log('Step 1: Checking html2pdf library...');
+        if (typeof html2pdf === 'undefined') {
+            console.error('❌ html2pdf library is not loaded!');
+            showStatus('❌ PDF library not loaded. Please refresh the page.', 'error');
+            return;
+        }
+        console.log('✅ html2pdf library is loaded');
+        
         button.disabled = true;
-        button.innerHTML = '⏳ Pre-processing content...';
+        button.innerHTML = '⏳ Starting PDF export...';
         
+        // Step 2: Get content
+        console.log('Step 2: Getting HTML content...');
         const htmlCode = document.getElementById('htmlEditor').value;
+        console.log('Content length:', htmlCode.length, 'characters');
         
-        // Simple check if we have content
         if (!htmlCode.trim()) {
-            showStatus('Please add some content to export!', 'error');
+            console.error('❌ No content to export');
+            showStatus('❌ Please add some content to export!', 'error');
             button.disabled = false;
             button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
             return;
         }
+        console.log('✅ Content found');
         
         try {
-            button.innerHTML = '⏳ Generating PDF...';
-            console.log('Starting PDF generation...');
+            // Step 3: Create element
+            console.log('Step 3: Creating PDF element...');
+            button.innerHTML = '⏳ Creating PDF element...';
             
-            // Create element for PDF generation
             const element = document.createElement('div');
             element.innerHTML = htmlCode;
-            element.style.width = '210mm';
-            element.style.minHeight = '297mm';
-            element.style.margin = '0 auto';
-            element.style.padding = '20mm';
-            element.style.backgroundColor = 'white';
-            element.style.fontFamily = 'Arial, sans-serif';
             
-            // Enhanced PDF options for reliability
+            // Apply basic styling
+            element.style.fontFamily = 'Arial, sans-serif';
+            element.style.backgroundColor = 'white';
+            element.style.color = 'black';
+            element.style.padding = '20px';
+            element.style.lineHeight = '1.6';
+            element.style.maxWidth = '100%';
+            
+            console.log('✅ PDF element created');
+            
+            // Step 4: Configure PDF options
+            console.log('Step 4: Configuring PDF options...');
+            button.innerHTML = '⏳ Configuring PDF...';
+            
             const opt = {
-                margin: [margin, margin, margin, margin],
+                margin: 0.5,
                 filename: `document-${format}-${Date.now()}.pdf`,
                 image: { 
                     type: 'jpeg', 
-                    quality: 0.98
+                    quality: 0.92
                 },
                 html2canvas: { 
-                    scale: 1.0, // Reliable scale
+                    scale: 0.75,
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: '#ffffff',
-                    logging: false, // Disable logging for stability
+                    logging: true,
                     scrollX: 0,
                     scrollY: 0,
-                    windowWidth: 794, // A4 width
-                    windowHeight: 1123, // A4 height
                     onclone: function(clonedDoc) {
-                        console.log('Processing cloned document...');
+                        console.log('📋 Document cloned for PDF processing');
                         
-                        try {
-                            // Apply div protection
-                            const contentDivs = clonedDoc.querySelectorAll('div');
-                            contentDivs.forEach(div => {
-                                if (!div.className.includes('manual-page-break')) {
-                                    div.style.pageBreakInside = 'avoid';
-                                    div.style.breakInside = 'avoid';
-                                    div.style.overflow = 'visible';
-                                }
-                            });
-                            
-                            // Ensure proper styling
-                            clonedDoc.body.style.margin = '0';
-                            clonedDoc.body.style.padding = '0';
-                            clonedDoc.body.style.backgroundColor = '#ffffff';
-                            
-                            console.log('Document processing complete');
-                        } catch (error) {
-                            console.error('Error in onclone:', error);
-                        }
+                        // Apply basic protection to all divs
+                        const allDivs = clonedDoc.querySelectorAll('div');
+                        allDivs.forEach(div => {
+                            div.style.pageBreakInside = 'avoid';
+                            div.style.breakInside = 'avoid';
+                            div.style.overflow = 'visible';
+                        });
+                        
+                        console.log('✅ Div protection applied to', allDivs.length, 'elements');
                     }
                 },
                 jsPDF: { 
                     unit: 'in',
                     format: format, 
-                    orientation: orientation,
-                    compress: true
-                },
-                pagebreak: { 
-                    mode: ['css', 'legacy'],
-                    avoid: 'div'
+                    orientation: orientation
                 }
             };
             
-            // Generate PDF with error handling
-            html2pdf().set(opt).from(element).save()
+            console.log('✅ PDF options configured');
+            console.log('Format:', format, 'Orientation:', orientation, 'Margin:', margin);
+            
+            // Step 5: Generate PDF
+            console.log('Step 5: Starting PDF generation...');
+            button.innerHTML = '⏳ Generating PDF...';
+            
+            console.log('Calling html2pdf()...');
+            
+            html2pdf()
+                .set(opt)
+                .from(element)
+                .save()
                 .then(() => {
-                    console.log('PDF generated successfully!');
+                    console.log('🎉 PDF GENERATION SUCCESS!');
                     showStatus(`✅ ${format.toUpperCase()} PDF generated successfully!`, 'success');
                     button.disabled = false;
                     button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+                    console.log('=== PDF GENERATION DEBUG END (SUCCESS) ===');
                 })
                 .catch((error) => {
-                    console.error('PDF Generation Error:', error);
-                    showStatus(`❌ PDF Error: ${error.message}`, 'error');
+                    console.error('💥 PDF GENERATION FAILED!');
+                    console.error('Error details:', error);
+                    console.error('Error message:', error.message);
+                    console.error('Error stack:', error.stack);
+                    
+                    showStatus(`❌ PDF Generation Failed: ${error.message}`, 'error');
                     button.disabled = false;
                     button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
                     
-                    // Provide helpful suggestions
-                    if (error.message.includes('canvas') || error.message.includes('CORS')) {
-                        showStatus('Try: 1) Refresh page 2) Use simpler HTML 3) Run locally instead of GitHub Pages', 'info');
+                    // Provide specific troubleshooting
+                    if (error.message.includes('canvas')) {
+                        showStatus('🔧 Canvas error - try the "Simple PDF Test" button below', 'info');
+                    } else if (error.message.includes('CORS')) {
+                        showStatus('🔧 CORS error - try running locally instead of GitHub Pages', 'info');
+                    } else if (error.message.includes('permission')) {
+                        showStatus('🔧 Permission error - check browser popup blocker', 'info');
+                    }
+                    
+                    console.log('=== PDF GENERATION DEBUG END (FAILED) ===');
+                });
+            
+        } catch (error) {
+            console.error('💥 CRITICAL ERROR in PDF generation setup!');
+            console.error('Error:', error);
+            showStatus(`❌ Critical Error: ${error.message}`, 'error');
+            button.disabled = false;
+            button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+            console.log('=== PDF GENERATION DEBUG END (CRITICAL ERROR) ===');
+        }
+    }
+
+    // Simple PDF test with minimal content
+    function simplePDFTest() {
+        console.log('=== SIMPLE PDF TEST START ===');
+        
+        const testBtn = document.getElementById('simpleTestBtn');
+        testBtn.disabled = true;
+        testBtn.innerHTML = '🧪 Testing...';
+        
+        // Check library
+        if (typeof html2pdf === 'undefined') {
+            console.error('❌ html2pdf not loaded');
+            showStatus('❌ PDF library not loaded', 'error');
+            testBtn.disabled = false;
+            testBtn.innerHTML = '🧪 Simple PDF Test';
+            return;
+        }
+        
+        try {
+            // Create minimal test content
+            const testElement = document.createElement('div');
+            testElement.innerHTML = `
+                <h1>PDF Test</h1>
+                <p>This is a simple test to check if PDF generation works at all.</p>
+                <p>Time: ${new Date().toLocaleString()}</p>
+            `;
+            testElement.style.fontFamily = 'Arial';
+            testElement.style.padding = '20px';
+            testElement.style.backgroundColor = 'white';
+            
+            const simpleOpts = {
+                margin: 1,
+                filename: 'simple-test.pdf',
+                image: { type: 'jpeg', quality: 0.8 },
+                html2canvas: { scale: 1, logging: false },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            
+            console.log('Starting simple PDF test...');
+            
+            html2pdf().set(simpleOpts).from(testElement).save()
+                .then(() => {
+                    console.log('🎉 Simple PDF test SUCCESS!');
+                    showStatus('✅ Simple PDF test passed! Main export should work.', 'success');
+                    testBtn.disabled = false;
+                    testBtn.innerHTML = '🧪 Simple PDF Test';
+                })
+                .catch((error) => {
+                    console.error('💥 Simple PDF test FAILED:', error);
+                    showStatus('❌ Simple PDF test failed: ' + error.message, 'error');
+                    testBtn.disabled = false;
+                    testBtn.innerHTML = '🧪 Simple PDF Test';
+                    
+                    // Browser-specific advice
+                    const userAgent = navigator.userAgent;
+                    if (userAgent.includes('Chrome')) {
+                        showStatus('🔧 Chrome user: Check if pop-ups are blocked', 'info');
+                    } else if (userAgent.includes('Safari')) {
+                        showStatus('🔧 Safari user: Try Chrome or Firefox', 'info');
+                    } else if (userAgent.includes('Firefox')) {
+                        showStatus('🔧 Firefox user: Check security settings', 'info');
                     }
                 });
             
         } catch (error) {
-            console.error('Pre-processing error:', error);
-            showStatus(`❌ Error: ${error.message}`, 'error');
-            button.disabled = false;
-            button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+            console.error('💥 Simple PDF test setup error:', error);
+            showStatus('❌ Test setup error: ' + error.message, 'error');
+            testBtn.disabled = false;
+            testBtn.innerHTML = '🧪 Simple PDF Test';
         }
     }
 
@@ -1076,59 +1179,107 @@
         }, 5000);
     }
 
-    // Test function to check if html2pdf library is working
-    function testPDFLibrary() {
-        const testBtn = document.getElementById('testBtn');
-        testBtn.disabled = true;
-        testBtn.innerHTML = '🔍 Testing...';
+    // Debug info function to help troubleshoot
+    function debugInfo() {
+        console.log('=== DEBUG INFO START ===');
         
-        console.log('Testing PDF library...');
+        const debugBtn = document.getElementById('debugBtn');
+        debugBtn.disabled = true;
+        debugBtn.innerHTML = '🐛 Checking...';
         
-        try {
-            // Check if html2pdf is loaded
-            if (typeof html2pdf === 'undefined') {
-                throw new Error('html2pdf library not loaded');
-            }
-            
-            // Create a simple test element
-            const testElement = document.createElement('div');
-            testElement.innerHTML = '<h1>PDF Test</h1><p>This is a test to check if PDF generation works on GitHub Pages.</p>';
-            testElement.style.padding = '20px';
-            testElement.style.fontFamily = 'Arial, sans-serif';
-            
-            // Simple PDF options
-            const testOpts = {
-                margin: 0.5,
-                filename: 'test.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 1 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            
-            // Try to generate a simple PDF
-            html2pdf().set(testOpts).from(testElement).save().then(() => {
-                showStatus('✅ PDF library working! If main export fails, try simpler content.', 'success');
-                testBtn.disabled = false;
-                testBtn.innerHTML = '🔍 Test PDF Library';
-                console.log('PDF library test successful');
-            }).catch((error) => {
-                showStatus('❌ PDF library test failed: ' + error.message, 'error');
-                testBtn.disabled = false;
-                testBtn.innerHTML = '🔍 Test PDF Library';
-                console.error('PDF library test failed:', error);
-                
-                // Provide GitHub Pages specific advice
-                if (window.location.hostname.includes('github.io')) {
-                    showStatus('📌 GitHub Pages detected. PDF generation may be restricted. Try running locally.', 'info');
-                }
-            });
-            
-        } catch (error) {
-            showStatus('❌ PDF library error: ' + error.message, 'error');
-            testBtn.disabled = false;
-            testBtn.innerHTML = '🔍 Test PDF Library';
-            console.error('PDF library error:', error);
+        let debugReport = '🐛 PDF Export Debug Report:\n\n';
+        
+        // Check browser
+        debugReport += `Browser: ${navigator.userAgent}\n`;
+        debugReport += `Platform: ${navigator.platform}\n`;
+        debugReport += `Language: ${navigator.language}\n\n`;
+        
+        // Check PDF library
+        if (typeof html2pdf === 'undefined') {
+            debugReport += '❌ html2pdf library: NOT LOADED\n';
+        } else {
+            debugReport += '✅ html2pdf library: LOADED\n';
         }
+        
+        // Check jQuery (sometimes required)
+        if (typeof $ !== 'undefined') {
+            debugReport += '✅ jQuery: Available\n';
+        } else {
+            debugReport += '⚠️ jQuery: Not available (may be ok)\n';
+        }
+        
+        // Check content
+        const htmlCode = document.getElementById('htmlEditor').value;
+        debugReport += `📄 Content length: ${htmlCode.length} characters\n`;
+        
+        if (htmlCode.includes('<div')) {
+            debugReport += `📦 Contains divs: YES\n`;
+        } else {
+            debugReport += `📦 Contains divs: NO\n`;
+        }
+        
+        // Check host
+        debugReport += `🌐 Host: ${window.location.hostname}\n`;
+        if (window.location.hostname.includes('github.io')) {
+            debugReport += '⚠️ GitHub Pages detected - may have restrictions\n';
+        }
+        
+        // Check popup blocker
+        debugReport += `🚫 Popup test: `;
+        try {
+            const popup = window.open('', '_blank', 'width=1,height=1');
+            if (popup) {
+                popup.close();
+                debugReport += 'PASSED\n';
+            } else {
+                debugReport += 'BLOCKED (may cause PDF issues)\n';
+            }
+        } catch (e) {
+            debugReport += 'ERROR\n';
+        }
+        
+        debugReport += '\n=== TROUBLESHOOTING SUGGESTIONS ===\n';
+        debugReport += '1. Try "Simple Test" button first\n';
+        debugReport += '2. Check browser console for errors (F12)\n';
+        debugReport += '3. Try different browser (Chrome recommended)\n';
+        debugReport += '4. Disable popup blocker for this site\n';
+        debugReport += '5. Try running locally instead of GitHub Pages\n';
+        debugReport += '6. Use simpler HTML content\n';
+        
+        console.log(debugReport);
+        alert(debugReport);
+        
+        showStatus('🐛 Debug info displayed in console and alert', 'info');
+        
+        debugBtn.disabled = false;
+        debugBtn.innerHTML = '🐛 Debug Info';
+        
+        console.log('=== DEBUG INFO END ===');
+    }
+
+    // Update the initialization
+    function initializeEditor() {
+        updatePreview();
+        updateLineNumbers();
+        updateWordCount();
+        
+        // Add scroll synchronization for line numbers
+        const editor = document.getElementById('htmlEditor');
+        const lineNumbers = document.getElementById('lineNumbers');
+        
+        editor.addEventListener('scroll', function() {
+            lineNumbers.scrollTop = editor.scrollTop;
+        });
+        
+        // Check PDF library on startup
+        if (typeof html2pdf === 'undefined') {
+            console.error('⚠️ html2pdf library not loaded on startup');
+            showStatus('⚠️ PDF library loading issue - try refreshing page', 'error');
+        } else {
+            console.log('✅ html2pdf library loaded successfully');
+        }
+        
+        console.log('Enhanced HTML editor initialized with debugging!');
     }
 
     // Update button text when format changes
