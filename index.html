@@ -171,7 +171,6 @@
         min-height: 400px;
         background: white;
         overflow: auto;
-        /* A4 preview simulation */
         max-width: 100%;
     }
 
@@ -386,7 +385,7 @@
 
 <html>
 <head>
-    <title>A4 Sample Document</title>
+    <title>A4 Document with Perfect Page Breaks</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -410,7 +409,6 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        text-align: center;
     }
     
     .content-wrapper {
@@ -425,38 +423,12 @@
         margin: 0;
     }
     
-    /* Enhanced page break controls */
-    .page-break {
-        page-break-before: always !important;
-        break-before: page !important;
-        display: block !important;
-        height: 1px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .page-break-after {
-        page-break-after: always !important;
-        break-after: page !important;
-    }
-    
-    .no-break {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    /* Force new page for specific elements */
-    .new-page {
-        page-break-before: always !important;
-        break-before: page !important;
-    }
-    
     h1 {
         color: #2c3e50;
         border-bottom: 2px solid #3498db;
         padding-bottom: 10px;
         font-size: 18pt;
-        margin: 20pt 0 15pt 0;
+        margin: 0 0 15pt 0;
         text-align: center;
         width: 100%;
     }
@@ -465,13 +437,6 @@
         color: #34495e;
         font-size: 14pt;
         margin: 15pt 0 10pt 0;
-        text-align: left;
-    }
-    
-    h3 {
-        color: #34495e;
-        font-size: 13pt;
-        margin: 12pt 0 8pt 0;
     }
     
     p {
@@ -492,8 +457,6 @@
         border-left: 4px solid #3498db;
         margin: 20px 0;
         page-break-inside: avoid;
-        width: 100%;
-        box-sizing: border-box;
         word-wrap: break-word;
     }
     
@@ -502,15 +465,12 @@
         width: 100%;
         margin: 20px 0;
         page-break-inside: avoid;
-        table-layout: fixed;
     }
     
     th, td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
     }
     
     th {
@@ -518,162 +478,121 @@
         color: white;
     }
     
-    ul, ol {
-        margin: 10pt 0;
-        padding-left: 20pt;
-    }
-    
-    li {
-        margin: 5pt 0;
-    }
-    
-    /* Page break controls that work with html2pdf */
     .page-break {
         page-break-before: always !important;
         break-before: page !important;
         display: block !important;
-        height: 1px !important;
+        height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-    }
-    
-    .page-break-after {
-        page-break-after: always !important;
-        break-after: page !important;
+        border: none !important;
     }
     
     .no-break {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
-    
-    /* Ensure content flows properly */
-    * {
-        box-sizing: border-box;
-    }
-    
-    /* PDF-specific adjustments */
-    @media print {
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        .page-container {
-            margin: 0 !important;
-            padding: 20mm !important;
-        }
-        
-        .content-wrapper {
-            max-width: 170mm !important;
-        }
-        
-        .page-break {
-            page-break-before: always !important;
-            display: block !important;
-        }
-        
-        .no-break {
-            page-break-inside: avoid !important;
-        }
-    }
 </style>
 ```
 
 </head>
 <body>
-    <h1>Professional A4 Document</h1>
-    <p>This is a <span class="highlight">sample document</span> optimized for A4 paper format (210 × 297 mm).</p>
+    <div class="page-container">
+        <div class="content-wrapper">
+            <h1>Professional A4 Document - Page 1</h1>
+            <p>This is a <span class="highlight">perfectly centered document</span> optimized for A4 paper format with working page breaks.</p>
 
 ```
-<div class="info-box">
-    <h3>A4 PDF Features:</h3>
-    <ul>
-        <li>✅ Perfect A4 dimensions (210 × 297 mm)</li>
-        <li>✅ Optimized margins and spacing</li>
-        <li>✅ Print-friendly styling</li>
-        <li>✅ Page break controls</li>
-        <li>✅ Professional formatting</li>
-    </ul>
-</div>
-
-<h2>Document Content</h2>
-<p>This document is specifically designed for A4 paper size with proper margins, font sizes, and spacing that work perfectly when printed or exported as PDF.</p>
-
-<div class="no-break">
-    <h2>Sample Table</h2>
-    <table>
-        <tr>
-            <th>Feature</th>
-            <th>A4 Optimized</th>
-            <th>Status</th>
-        </tr>
-        <tr>
-            <td>Paper Size</td>
-            <td>210 × 297 mm</td>
-            <td>✅ Perfect</td>
-        </tr>
-        <tr>
-            <td>Margins</td>
-            <td>25mm all sides (1 inch)</td>
-            <td>✅ Balanced margins</td>
-        </tr>
-        <tr>
-            <td>Content Width</td>
-            <td>160mm (properly centered)</td>
-            <td>✅ No text cutoff</td>
-        </tr>
-        <tr>
-            <td>Font Size</td>
-            <td>12pt body, 18pt headings</td>
-            <td>✅ Readable</td>
-        </tr>
-        <tr>
-            <td>Line Height</td>
-            <td>1.6 for readability</td>
-            <td>✅ Optimal</td>
-        </tr>
-    </table>
-</div>
-
-<h2>Page Break Example</h2>
-<p>The content below will appear on a new page when printed or exported to PDF:</p>
-
-<div class="page-break">
-    <h1>Second Page</h1>
-    <p>This content appears on the second page due to the page-break CSS rule above.</p>
-    
-    <p>A4 format ensures consistent layout across different devices and printers, making it ideal for:</p>
-    <ul>
-        <li>Business documents and reports</li>
-        <li>Academic papers and research</li>
-        <li>Invoices and contracts</li>
-        <li>Official correspondence</li>
-        <li>Technical documentation</li>
-    </ul>
-    
-    <div class="no-break">
-        <h2>Multi-Page Support</h2>
-        <p>This PDF converter now properly handles multiple pages, ensuring all your content is captured regardless of document length.</p>
-        
         <div class="info-box">
-            <h3>Key Benefits:</h3>
+            <h3>Page Break Features:</h3>
             <ul>
-                <li>✅ All pages exported correctly</li>
-                <li>✅ Proper page breaks</li>
-                <li>✅ Consistent formatting</li>
-                <li>✅ Professional appearance</li>
+                <li>✅ Perfect A4 dimensions and centering</li>
+                <li>✅ Working manual page breaks</li>
+                <li>✅ Proper content flow across pages</li>
+                <li>✅ Professional formatting</li>
             </ul>
         </div>
+
+        <h2>Document Content</h2>
+        <p>This document demonstrates proper page breaks and perfect centering. Content is properly aligned and will break into separate pages correctly when exported to PDF.</p>
+
+        <div class="no-break">
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Page Breaks</td>
+                    <td>✅ Working</td>
+                    <td>Manual page breaks now function properly</td>
+                </tr>
+                <tr>
+                    <td>Centering</td>
+                    <td>✅ Perfect</td>
+                    <td>Content is centered with proper margins</td>
+                </tr>
+                <tr>
+                    <td>A4 Format</td>
+                    <td>✅ Optimized</td>
+                    <td>Perfect A4 layout and spacing</td>
+                </tr>
+            </table>
+        </div>
+
+        <p>The next section will appear on a new page due to the manual page break below:</p>
     </div>
 </div>
 
-<div class="page-break">
-    <h1>Third Page</h1>
-    <p>This demonstrates that the PDF export now correctly handles multiple pages and long documents.</p>
-    
-    <h2>Testing Multi-Page Export</h2>
-    <p>You can add as much content as needed, and the PDF will include all pages with proper formatting and margins.</p>
+<div class="page-break"></div>
+
+<div class="page-container">
+    <div class="content-wrapper">
+        <h1>Second Page - Manual Page Break</h1>
+        <p>This content appears on the second page due to the manual page break above. The centering and formatting remain consistent across all pages.</p>
+        
+        <h2>Page Break Testing</h2>
+        <p>This demonstrates that manual page breaks are working correctly. Each page maintains proper centering and formatting.</p>
+        
+        <div class="info-box">
+            <h3>Second Page Features:</h3>
+            <ul>
+                <li>Manual page break successfully triggered</li>
+                <li>Consistent formatting across pages</li>
+                <li>Perfect centering maintained</li>
+                <li>Professional appearance</li>
+            </ul>
+        </div>
+
+        <p>Let's add more content to test automatic page breaks when content exceeds page length...</p>
+        
+        <h2>Additional Content Section</h2>
+        <p>This section adds more content to demonstrate how the system handles longer documents with both manual and automatic page breaks.</p>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="page-container">
+    <div class="content-wrapper">
+        <h1>Third Page - Testing Complete</h1>
+        <p>This third page confirms that multiple manual page breaks work correctly and that content remains perfectly centered throughout the document.</p>
+        
+        <h2>Summary</h2>
+        <p>This document successfully demonstrates:</p>
+        <ul>
+            <li>Perfect content centering on each page</li>
+            <li>Working manual page breaks</li>
+            <li>Consistent A4 formatting</li>
+            <li>Professional multi-page layout</li>
+        </ul>
+        
+        <div class="info-box">
+            <h3>Export Results:</h3>
+            <p>When exported to PDF, this document will show three separate pages with perfect centering and proper page breaks.</p>
+        </div>
+    </div>
 </div>
 ```
 
@@ -720,11 +639,11 @@
         <div class="instructions-grid">
             <div class="instruction-item">
                 <h4>📏 A4 Specifications</h4>
-                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app uses balanced 1-inch margins with content width of 160mm for optimal centering and text visibility.</p>
+                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app uses balanced margins with content width optimized for perfect centering and text visibility.</p>
             </div>
             <div class="instruction-item">
-                <h4>🎯 Optimal Settings</h4>
-                <p>Use 12pt fonts for body text, 25mm margins (1 inch), and content width of 160mm for best A4 results. Content is automatically centered with proper margins on all sides.</p>
+                <h4>🎯 Page Breaks</h4>
+                <p>Use manual page breaks with .page-break divs. Each page should be wrapped in .page-container and .content-wrapper for perfect centering and proper page flow.</p>
             </div>
             <div class="instruction-item">
                 <h4>📱 Export Options</h4>
@@ -732,7 +651,7 @@
             </div>
             <div class="instruction-item">
                 <h4>🔧 CSS Tips</h4>
-                <p>Use @page rules for print styling, page-break properties for layout control, and avoid fixed positioning for reliable A4 output.</p>
+                <p>Use @page rules for print styling, flexbox for centering, and page-break properties for layout control. The sample shows best practices.</p>
             </div>
         </div>
     </div>
@@ -781,35 +700,22 @@
 
     function generatePDF() {
         const button = document.getElementById('exportBtn');
-        button.disabled = true;
-        button.innerHTML = '⏳ Generating A4 PDF...';
-        
-        const htmlCode = document.getElementById('htmlEditor').value;
         const format = document.getElementById('formatSelect').value;
         const orientation = document.getElementById('orientationSelect').value;
         const margin = parseFloat(document.getElementById('marginSelect').value);
+        
+        button.disabled = true;
+        button.innerHTML = '⏳ Generating PDF...';
+        
+        const htmlCode = document.getElementById('htmlEditor').value;
         
         // Create a temporary element for PDF generation
         const element = document.createElement('div');
         element.innerHTML = htmlCode;
         
-    function generatePDF() {
-        const button = document.getElementById('exportBtn');
-        button.disabled = true;
-        button.innerHTML = '⏳ Generating A4 PDF...';
-        
-        const htmlCode = document.getElementById('htmlEditor').value;
-        const format = document.getElementById('formatSelect').value;
-        const orientation = document.getElementById('orientationSelect').value;
-        const margin = parseFloat(document.getElementById('marginSelect').value);
-        
-        // Create a properly structured wrapper for PDF generation
-        const element = document.createElement('div');
-        element.innerHTML = htmlCode;
-        
-        // Enhanced PDF options for proper page breaks and centering
+        // Enhanced PDF options for perfect page breaks and centering
         const opt = {
-            margin: [0.5, 0.5, 0.5, 0.5], // Small margins since content handles its own
+            margin: [0.3, 0.3, 0.3, 0.3], // Small margins since content handles its own
             filename: `document-${format}.pdf`,
             image: { 
                 type: 'jpeg', 
@@ -845,17 +751,19 @@
                         container.style.alignItems = 'center';
                     });
                     
-                    // Set body styles
+                    // Set body styles for proper rendering
                     clonedDoc.body.style.margin = '0';
                     clonedDoc.body.style.padding = '0';
                     clonedDoc.body.style.overflow = 'visible';
+                    clonedDoc.body.style.backgroundColor = '#ffffff';
                 }
             },
             jsPDF: { 
                 unit: 'in',
                 format: format, 
                 orientation: orientation,
-                compress: true
+                compress: true,
+                hotfixes: ['px_scaling']
             },
             pagebreak: { 
                 mode: ['css', 'legacy'],
@@ -875,7 +783,6 @@
             button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
             console.error('PDF Generation Error:', error);
         });
-    }
     }
 
     async function askClaude() {
@@ -925,7 +832,7 @@
                         - Center titles with text-align: center
                         
                         **Structure each page like this:**
-                        ```html
+                        \`\`\`html
                         <div class="page-container">
                             <div class="content-wrapper">
                                 <h1>Page Title</h1>
@@ -933,12 +840,9 @@
                             </div>
                         </div>
                         <div class="page-break"></div>
-                        ```
+                        \`\`\`
                         
-                        Create complete HTML with working page breaks and perfect centering. Include multiple pages to demonstrate functionality.
-
-                        Return ONLY the complete HTML code, starting with <!DOCTYPE html> and ending with </html>.
-                        The HTML should be perfectly formatted for A4 PDF export.`
+                        Create complete HTML with working page breaks and perfect centering. Include multiple pages to demonstrate functionality.`
                     }]
                 })
             });
@@ -989,8 +893,19 @@
         document.getElementById('exportBtn').innerHTML = `⬇️ Export PDF (${format})`;
     });
 
-    // Initialize preview
+    // Initialize preview on page load
     updatePreview();
+    
+    // Add debug logging to ensure functions are loaded
+    console.log('All functions loaded successfully!');
+    console.log('Available functions:', {
+        updatePreview: typeof updatePreview,
+        togglePreview: typeof togglePreview,
+        generatePDF: typeof generatePDF,
+        askClaude: typeof askClaude,
+        insertClaudeResponse: typeof insertClaudeResponse,
+        showStatus: typeof showStatus
+    });
 </script>
 ```
 
