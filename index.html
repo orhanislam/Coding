@@ -303,6 +303,90 @@
         font-family: monospace;
     }
 
+    /* AGGRESSIVE Div Protection - NO SPLITTING ALLOWED */
+    div {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    
+    /* Extra protection for common content containers */
+    .info-box, .section, .card, .block, .item, .box, .quote, .citation, .reference {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        orphans: 3 !important;
+        widows: 3 !important;
+    }
+    
+    /* Allow only these containers to break */
+    .page-container {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+    }
+    
+    .content-wrapper {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+    }
+
+    /* Styling for quote boxes like in your image */
+    .quote, .reference, .citation {
+        background: linear-gradient(135deg, #ffb3ba, #ffc0cb);
+        border-left: 4px solid #dc143c;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 5px;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .quote h4, .reference h4, .citation h4 {
+        color: #8b0000;
+        margin: 0 0 10px 0;
+        font-size: 14pt;
+        font-weight: bold;
+    }
+    
+    .quote p, .reference p, .citation p {
+        color: #2c2c2c;
+        margin: 0 0 10px 0;
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    .quote cite, .reference cite, .citation cite {
+        color: #666;
+        font-style: italic;
+        font-size: 10pt;
+        display: block;
+        margin-top: 8px;
+    }
+
+    /* ULTRA STRONG div protection */
+    .protected-div {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+        orphans: 10 !important;
+        widows: 10 !important;
+        margin: 10px 0 !important;
+    }
+    
+    /* Force page break before if needed */
+    .force-page-break, .manual-page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+        height: 1px !important;
+        visibility: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     /* A4 specific print styles */
     @media print {
         @page {
@@ -328,7 +412,7 @@
                     <div class="icon">📄</div>
                     <div>
                         <div class="title">HTML to PDF Converter - A4 Format</div>
-                        <div class="subtitle">Self-hosted with Claude AI integration & A4 support</div>
+                        <div class="subtitle">Self-hosted with Claude AI integration & Smart Page Breaks</div>
                     </div>
                 </div>
                 <div class="button-group">
@@ -388,7 +472,7 @@
 
 <html>
 <head>
-    <title>A4 Document with Perfect Page Breaks</title>
+    <title>A4 Document with Smart Page Breaks</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -459,17 +543,49 @@
         padding: 15px;
         border-left: 4px solid #3498db;
         margin: 20px 0;
+        page-break-inside: avoid;
+        word-wrap: break-word;
+    }
+    
+    .quote, .reference, .citation {
+        background: linear-gradient(135deg, #ffb3ba, #ffc0cb);
+        border-left: 4px solid #dc143c;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 5px;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
-        word-wrap: break-word;
+        overflow: visible !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .quote h4, .reference h4, .citation h4 {
+        color: #8b0000;
+        margin: 0 0 10px 0;
+        font-size: 14pt;
+        font-weight: bold;
+    }
+    
+    .quote p, .reference p, .citation p {
+        color: #2c2c2c;
+        margin: 0 0 10px 0;
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    .quote cite, .reference cite, .citation cite {
+        color: #666;
+        font-style: italic;
+        font-size: 10pt;
+        display: block;
+        margin-top: 8px;
     }
     
     table {
         border-collapse: collapse;
         width: 100%;
         margin: 20px 0;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+        page-break-inside: avoid;
     }
     
     th, td {
@@ -497,55 +613,6 @@
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
-    
-    /* AGGRESSIVE Div Protection - NO SPLITTING ALLOWED */
-    div {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        overflow: visible !important;
-        display: block !important;
-    }
-    
-    /* Extra protection for common content containers */
-    .info-box, .section, .card, .block, .item, .box, .quote, .citation, .reference {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        overflow: visible !important;
-        orphans: 3 !important;
-        widows: 3 !important;
-    }
-    
-    /* Allow only these containers to break */
-    .page-container {
-        page-break-inside: auto !important;
-        break-inside: auto !important;
-    }
-    
-    .content-wrapper {
-        page-break-inside: auto !important;
-        break-inside: auto !important;
-    }
-    
-    /* ULTRA STRONG div protection */
-    .protected-div {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        overflow: visible !important;
-        display: block !important;
-        orphans: 10 !important;
-        widows: 10 !important;
-        margin: 10px 0 !important;
-    }
-    
-    /* Force page break before if needed */
-    .force-page-break {
-        page-break-before: always !important;
-        break-before: page !important;
-        height: 1px !important;
-        visibility: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
 </style>
 ```
 
@@ -553,151 +620,57 @@
 <body>
     <div class="page-container">
         <div class="content-wrapper">
-            <h1>Professional A4 Document - Page 1</h1>
-            <p>This is a <span class="highlight">perfectly centered document</span> optimized for A4 paper format with working page breaks.</p>
+            <h1>Professional Document - Smart Page Breaks</h1>
+            <p>This document demonstrates smart automatic page breaks that prevent div splitting.</p>
 
 ```
         <div class="info-box">
-            <h3>Page Break Features:</h3>
+            <h3>Smart Page Break Features:</h3>
             <ul>
-                <li>✅ Perfect A4 dimensions and centering</li>
-                <li>✅ Working manual page breaks</li>
+                <li>✅ Automatic height calculation</li>
+                <li>✅ Smart page break insertion</li>
                 <li>✅ Div elements never split across pages</li>
-                <li>✅ Professional formatting</li>
+                <li>✅ Works reliably on GitHub Pages</li>
             </ul>
         </div>
 
-        <h2>Document Content</h2>
-        <p>This document demonstrates proper page breaks and perfect centering. Each div element stays completely on one page.</p>
-
-        <div class="no-break">
-            <h3>Sample Table Section</h3>
-            <table>
-                <tr>
-                    <th>Feature</th>
-                    <th>Status</th>
-                    <th>Description</th>
-                </tr>
-                <tr>
-                    <td>Page Breaks</td>
-                    <td>✅ Working</td>
-                    <td>Manual page breaks function properly</td>
-                </tr>
-                <tr>
-                    <td>Div Protection</td>
-                    <td>✅ Perfect</td>
-                    <td>Div elements never split across pages</td>
-                </tr>
-                <tr>
-                    <td>A4 Format</td>
-                    <td>✅ Optimized</td>
-                    <td>Perfect A4 layout and spacing</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="quote protected-div">
+        <div class="quote">
             <h4>"Hadislere Göre İslam Temelleri"</h4>
             <p>Hz. Ali (r.a.): "Rasulullah'ın (s.a.v.) her sözü hikmettir. O sözler, Allah'ın vahyiyle desteklenmiştir."</p>
             <cite>Nehc el-Belağa, Kelime 86, Sayfa 501</cite>
         </div>
 
-        <div class="quote protected-div">
+        <div class="quote">
             <h4>"Sünnet ve Kuran İlişkisi"</h4>
             <p>Hz. Ebu Bekir (r.a.): "Rasulullah'ın (s.a.v.) sünnetini terk eden kimse, Allah'ın yolundan sapmış olur."</p>
             <cite>Musannaf Abd er-Razzak, Cilt 11, Hadis No: 20429</cite>
         </div>
 
-        <div class="quote protected-div">
+        <div class="quote">
             <h4>"İslam'ın Temel Direktifleri"</h4>
             <p>Hz. Ömer (r.a.): "Hadisler, İslam'ın temel direktifleridir. Onları inkâr eden kimse, İslam'ın temelini yıkmış olur."</p>
             <cite>Tabakat-i Ibn Sa'd, Cilt 3, Sayfa 289</cite>
         </div>
 
-        <div class="reference protected-div">
+        <div class="reference">
             <h4>"Kuran ve Sünnet Uyumu"</h4>
             <p>Hz. Osman (r.a.): "Rasulullah'ın (s.a.v.) hadislerini öğrenin ve öğretin. Onlar, Allah'ın dinidir."</p>
             <cite>Tabakat-i Ibn Sa'd, Cilt 3, Sayfa 75</cite>
         </div>
 
-        <p>The next section will appear on a new page due to the manual page break below:</p>
-    </div>
-</div>
-
-<div class="page-break"></div>
-
-<div class="page-container">
-    <div class="content-wrapper">
-        <h1>Second Page - Manual Page Break</h1>
-        <p>This content appears on the second page due to the manual page break above. The centering and formatting remain consistent across all pages.</p>
-        
-        <h2>Page Break Testing</h2>
-        <p>This demonstrates that manual page breaks are working correctly. Each page maintains proper centering and formatting.</p>
-        
-        <div class="info-box protected-div">
-            <h3>Second Page Features:</h3>
-            <ul>
-                <li>Manual page break successfully triggered</li>
-                <li>Consistent formatting across pages</li>
-                <li>Perfect centering maintained</li>
-                <li>All div elements stay intact with ULTRA protection</li>
-            </ul>
+        <div class="quote">
+            <h4>"Hadislerin Önemi"</h4>
+            <p>Hz. Aişe (r.a.): "Rasulullah'ın (s.a.v.) hadislerini ezberleyin ve onları yayın. Çünkü bu hadisler, dinin direktleridir."</p>
+            <cite>Musannaf Ibn Ebi Şeybe, Cilt 7, Hadis No: 34651</cite>
         </div>
 
-        <div class="section protected-div">
-            <h3>ULTRA Protected Section</h3>
-            <p>This entire section uses .protected-div class for maximum protection. It uses JavaScript height calculation to prevent splits.</p>
-            <p>The system now calculates div heights and adds manual page breaks before divs that might be split.</p>
-        </div>
-
-        <div class="card protected-div">
-            <h4>Protected Card Example</h4>
-            <p>This card has multiple layers of protection:</p>
-            <ul>
-                <li>CSS page-break-inside: avoid</li>
-                <li>JavaScript height calculation</li>
-                <li>Manual page break insertion</li>
-                <li>Enhanced orphan/widow protection</li>
-            </ul>
-        </div>
-        
-        <div class="item protected-div">
-            <h4>Final Protected Block</h4>
-            <p>This demonstrates the most aggressive div protection available. If this still splits, we may need to use a different PDF library.</p>
-        </div>
-    </div>
-</div>
-
-<div class="page-break"></div>
-
-<div class="page-container">
-    <div class="content-wrapper">
-        <h1>Third Page - Testing Complete</h1>
-        <p>This third page confirms that multiple manual page breaks work correctly and that content remains perfectly centered throughout the document.</p>
-        
-        <h2>Summary</h2>
-        <p>This document successfully demonstrates:</p>
-        <ul>
-            <li>Perfect content centering on each page</li>
-            <li>Working manual page breaks</li>
-            <li>Consistent A4 formatting</li>
-            <li>Professional multi-page layout</li>
-        </ul>
-        
         <div class="info-box">
-            <h3>Export Results:</h3>
-            <p>When exported to PDF, this document will show three separate pages with perfect centering and proper page breaks. Each div element remains intact and never splits across pages.</p>
-        </div>
-        
-        <div class="section">
-            <h3>Final Section</h3>
-            <p>This final section demonstrates the complete functionality:</p>
+            <h3>How Smart Page Breaks Work:</h3>
             <ul>
-                <li>Perfect content centering on each page</li>
-                <li>Working manual page breaks</li>
-                <li>Div elements never split across pages</li>
-                <li>Multiple divs can coexist on same page</li>
-                <li>Professional multi-page layout</li>
+                <li>🧮 Measures actual div heights in A4 format</li>
+                <li>📏 Calculates remaining space on current page</li>
+                <li>✂️ Automatically inserts page breaks before divs that won't fit</li>
+                <li>📄 Ensures each div stays completely on one page</li>
             </ul>
         </div>
     </div>
@@ -724,9 +697,9 @@
     <!-- Claude AI Integration -->
     <div class="ai-section">
         <h3 style="color: #2d3748; margin-bottom: 20px;">🤖 Claude AI Assistant</h3>
-        <p style="color: #718096; margin-bottom: 20px;">Ask Claude to help you generate A4-optimized HTML content:</p>
+        <p style="color: #718096; margin-bottom: 20px;">Ask Claude to help you generate A4-optimized HTML content with smart page breaks:</p>
         
-        <input type="text" class="ai-input" id="claudeInput" placeholder="e.g., 'Create an A4 invoice template' or 'Generate a professional A4 report layout'">
+        <input type="text" class="ai-input" id="claudeInput" placeholder="e.g., 'Create an A4 invoice template' or 'Generate Islamic hadith quotes with proper page breaks'">
         
         <div class="button-group">
             <button class="btn btn-ai" onclick="askClaude()" id="claudeBtn">
@@ -743,19 +716,19 @@
 
     <!-- Instructions -->
     <div class="instructions">
-        <h3>📋 A4 PDF Export Guide</h3>
+        <h3>📋 Smart Page Break Guide</h3>
         <div class="instructions-grid">
             <div class="instruction-item">
-                <h4>📏 A4 Specifications</h4>
-                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app uses balanced margins with content width optimized for perfect centering and text visibility.</p>
+                <h4>📏 Smart Page Breaks</h4>
+                <p>The system automatically measures div heights and inserts page breaks to prevent splitting. No manual configuration needed - just export and watch the magic!</p>
             </div>
             <div class="instruction-item">
-                <h4>🎯 Page Breaks</h4>
-                <p>Use manual page breaks with .page-break divs. Each page should be wrapped in .page-container and .content-wrapper for perfect centering and proper page flow.</p>
+                <h4>🎯 Perfect for Quote Boxes</h4>
+                <p>Ideal for documents with quote boxes, citations, or any content blocks that must stay together. Each pink quote box will never split across pages.</p>
             </div>
             <div class="instruction-item">
                 <h4>📱 Export Options</h4>
-                <p>Choose from multiple paper formats and orientations. A4 Portrait is pre-selected for maximum compatibility with international standards.</p>
+                <p>Choose from multiple paper formats and orientations. The smart page break system works with all formats, automatically adjusting for different page sizes.</p>
             </div>
             <div class="instruction-item">
                 <h4>🔧 GitHub Pages Users</h4>
@@ -813,145 +786,155 @@
         const margin = parseFloat(document.getElementById('marginSelect').value);
         
         button.disabled = true;
-        button.innerHTML = '⏳ Generating PDF...';
+        button.innerHTML = '⏳ Pre-processing content...';
         
         const htmlCode = document.getElementById('htmlEditor').value;
         
-        // Create a temporary element for PDF generation
-        const element = document.createElement('div');
-        element.innerHTML = htmlCode;
+        // Create a temporary container to measure actual heights
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '210mm'; // A4 width
+        tempContainer.style.visibility = 'hidden';
+        tempContainer.innerHTML = htmlCode;
+        document.body.appendChild(tempContainer);
         
-        // Enhanced PDF options for perfect page breaks and centering
-        const opt = {
-            margin: [0.3, 0.3, 0.3, 0.3], // Small margins since content handles its own
-            filename: `document-${format}.pdf`,
-            image: { 
-                type: 'jpeg', 
-                quality: 0.98
-            },
-            html2canvas: { 
-                scale: 1.0, // Reduced scale for better page break detection
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: '#ffffff',
-                logging: false,
-                scrollX: 0,
-                scrollY: 0,
-                windowWidth: 794, // A4 width in pixels
-                windowHeight: 1123, // A4 height in pixels
-                removeContainer: true, // Better for page breaks
-                foreignObjectRendering: false, // Force canvas rendering
-                imageTimeout: 0,
-                onclone: function(clonedDoc) {
-                    // ULTRA AGGRESSIVE div protection - pre-process to add manual breaks
-                    const body = clonedDoc.body;
-                    const pageHeight = 1123; // A4 height in pixels
-                    const currentPageHeight = 0;
-                    let cumulativeHeight = 0;
+        try {
+            button.innerHTML = '⏳ Calculating page breaks...';
+            
+            // Find all divs that need protection in the temp container
+            const divsToProtect = tempContainer.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break)');
+            console.log('Found divs to protect:', divsToProtect.length);
+            
+            let currentPageHeight = 0;
+            const maxPageHeight = 900; // Safe page height in pixels for A4
+            let pageBreaksInserted = 0;
+            
+            divsToProtect.forEach((div, index) => {
+                // Force the div to be visible for height calculation
+                div.style.display = 'block';
+                div.style.visibility = 'visible';
+                
+                // Get the actual height of this div
+                const divHeight = div.offsetHeight || div.scrollHeight || 100;
+                const safeHeight = divHeight + 20; // Add buffer
+                
+                console.log(`Div ${index}: height=${divHeight}px, current page height=${currentPageHeight}px`);
+                
+                // Check if this div would cause page overflow
+                if (currentPageHeight > 0 && (currentPageHeight + safeHeight) > maxPageHeight) {
+                    console.log(`Inserting page break before div ${index}`);
                     
-                    // Get all content divs that need protection
-                    const protectedDivs = clonedDoc.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break)');
+                    // Insert a manual page break before this div
+                    const pageBreak = document.createElement('div');
+                    pageBreak.className = 'manual-page-break';
+                    pageBreak.style.pageBreakBefore = 'always';
+                    pageBreak.style.breakBefore = 'page';
+                    pageBreak.style.height = '1px';
+                    pageBreak.style.visibility = 'hidden';
+                    pageBreak.style.margin = '0';
+                    pageBreak.style.padding = '0';
+                    pageBreak.innerHTML = '<!-- Page Break -->';
                     
-                    protectedDivs.forEach((div, index) => {
-                        // Force each div to be a block and measure its height
-                        div.style.display = 'block';
-                        div.style.pageBreakInside = 'avoid';
-                        div.style.breakInside = 'avoid';
-                        div.style.overflow = 'visible';
-                        div.style.boxSizing = 'border-box';
-                        
-                        // Add a small buffer to prevent edge cases
-                        const divHeight = div.offsetHeight || div.scrollHeight || 200;
-                        const safeHeight = divHeight + 50; // Add 50px buffer
-                        
-                        // If this div might not fit on current "page space", force a page break before it
-                        if (cumulativeHeight > 0 && (cumulativeHeight + safeHeight) > 950) { // 950px = safe page content height
-                            // Create a manual page break before this div
-                            const pageBreak = clonedDoc.createElement('div');
-                            pageBreak.className = 'force-page-break';
-                            pageBreak.style.pageBreakBefore = 'always';
-                            pageBreak.style.breakBefore = 'page';
-                            pageBreak.style.height = '1px';
-                            pageBreak.style.visibility = 'hidden';
-                            pageBreak.style.margin = '0';
-                            pageBreak.style.padding = '0';
-                            
-                            // Insert the page break before this div
-                            div.parentNode.insertBefore(pageBreak, div);
-                            cumulativeHeight = safeHeight; // Reset for new page
-                        } else {
-                            cumulativeHeight += safeHeight;
-                        }
-                        
-                        // Extra protection for the div itself
-                        div.style.pageBreakInside = 'avoid !important';
-                        div.style.breakInside = 'avoid !important';
-                        div.style.orphans = '10';
-                        div.style.widows = '10';
-                    });
+                    // Insert before the div
+                    div.parentNode.insertBefore(pageBreak, div);
+                    pageBreaksInserted++;
                     
-                    // Apply styles to force page breaks to work
-                    const forceBreaks = clonedDoc.querySelectorAll('.force-page-break, .page-break');
-                    forceBreaks.forEach(breakEl => {
-                        breakEl.style.pageBreakBefore = 'always';
-                        breakEl.style.breakBefore = 'page';
-                        breakEl.style.display = 'block';
-                        breakEl.style.height = '1px';
-                        breakEl.style.visibility = 'hidden';
-                        breakEl.style.margin = '0';
-                        breakEl.style.padding = '0';
-                    });
-                    const pageBreaks = clonedDoc.querySelectorAll('.page-break');
-                    pageBreaks.forEach(pb => {
-                        pb.style.pageBreakBefore = 'always';
-                        pb.style.breakBefore = 'page';
-                        pb.style.display = 'block';
-                        pb.style.height = '1px';
-                        pb.style.visibility = 'hidden';
-                    });
-                    
-                    // Ensure content centering
-                    const containers = clonedDoc.querySelectorAll('.page-container');
-                    containers.forEach(container => {
-                        container.style.margin = '0 auto';
-                        container.style.display = 'flex';
-                        container.style.flexDirection = 'column';
-                        container.style.alignItems = 'center';
-                    });
-                    
-                    // Set body styles for proper rendering
-                    clonedDoc.body.style.margin = '0';
-                    clonedDoc.body.style.padding = '0';
-                    clonedDoc.body.style.overflow = 'visible';
-                    clonedDoc.body.style.backgroundColor = '#ffffff';
+                    // Reset page height for new page
+                    currentPageHeight = safeHeight;
+                } else {
+                    // Add to current page
+                    currentPageHeight += safeHeight;
                 }
-            },
-            jsPDF: { 
-                unit: 'in',
-                format: format, 
-                orientation: orientation,
-                compress: true,
-                hotfixes: ['px_scaling']
-            },
-            pagebreak: { 
-                mode: ['css', 'legacy', 'whiteline'],
-                before: ['.page-break', '.force-page-break', '.force-new-page'],
-                after: [],
-                avoid: ['div:not(.page-container):not(.content-wrapper)', '.quote', '.reference', '.citation', '.no-break', '.info-box', '.section', '.card', '.block', '.item']
-            }
-        };
-        
-        // Generate PDF with enhanced settings
-        html2pdf().set(opt).from(element).save().then(() => {
-            showStatus(`${format.toUpperCase()} PDF with perfect page breaks generated successfully!`, 'success');
+            });
+            
+            console.log(`Inserted ${pageBreaksInserted} manual page breaks`);
+            button.innerHTML = '⏳ Generating PDF...';
+            
+            // Get the processed HTML with page breaks
+            const processedHTML = tempContainer.innerHTML;
+            
+            // Create final element for PDF generation
+            const element = document.createElement('div');
+            element.innerHTML = processedHTML;
+            
+            // Simple PDF options that work reliably
+            const opt = {
+                margin: [0.3, 0.3, 0.3, 0.3],
+                filename: `document-${format}.pdf`,
+                image: { 
+                    type: 'jpeg', 
+                    quality: 0.95
+                },
+                html2canvas: { 
+                    scale: 1.0, // Lower scale for better compatibility
+                    useCORS: true,
+                    allowTaint: false,
+                    backgroundColor: '#ffffff',
+                    logging: true,
+                    scrollX: 0,
+                    scrollY: 0,
+                    onclone: function(clonedDoc) {
+                        console.log('Applying final styles to cloned document...');
+                        
+                        // Apply page break styles
+                        const manualBreaks = clonedDoc.querySelectorAll('.manual-page-break, .page-break');
+                        manualBreaks.forEach(pb => {
+                            pb.style.pageBreakBefore = 'always';
+                            pb.style.breakBefore = 'page';
+                            pb.style.display = 'block';
+                            pb.style.height = '1px';
+                            pb.style.visibility = 'hidden';
+                            pb.style.margin = '0';
+                            pb.style.padding = '0';
+                        });
+                        
+                        // Still apply div protection as backup
+                        const allDivs = clonedDoc.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break):not(.manual-page-break)');
+                        allDivs.forEach(div => {
+                            div.style.pageBreakInside = 'avoid';
+                            div.style.breakInside = 'avoid';
+                            div.style.overflow = 'visible';
+                        });
+                        
+                        console.log('Final styles applied');
+                    }
+                },
+                jsPDF: { 
+                    unit: 'in',
+                    format: format, 
+                    orientation: orientation
+                },
+                pagebreak: { 
+                    mode: ['css', 'legacy'],
+                    before: ['.page-break', '.manual-page-break'],
+                    avoid: 'div:not(.page-container):not(.content-wrapper)'
+                }
+            };
+            
+            // Generate PDF
+            html2pdf().set(opt).from(element).save().then(() => {
+                console.log(`PDF generated successfully with ${pageBreaksInserted} page breaks`);
+                showStatus(`${format.toUpperCase()} PDF generated with ${pageBreaksInserted} automatic page breaks!`, 'success');
+                button.disabled = false;
+                button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+            }).catch((error) => {
+                console.error('PDF Generation Error:', error);
+                showStatus('Error generating PDF: ' + error.message, 'error');
+                button.disabled = false;
+                button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
+            });
+            
+        } catch (error) {
+            console.error('Pre-processing error:', error);
+            showStatus('Error in pre-processing: ' + error.message, 'error');
             button.disabled = false;
             button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
-        }).catch((error) => {
-            showStatus('Error generating PDF: ' + error.message, 'error');
-            button.disabled = false;
-            button.innerHTML = `⬇️ Export PDF (${format.toUpperCase()})`;
-            console.error('PDF Generation Error:', error);
-        });
+        } finally {
+            // Clean up temporary container
+            document.body.removeChild(tempContainer);
+        }
     }
 
     async function askClaude() {
@@ -986,19 +969,7 @@
                         role: 'user',
                         content: `Create HTML content for: ${prompt}
 
-                        IMPORTANT: Create A4-optimized HTML with perfect page breaks and centering:
-                        
-                        **Page Break Requirements:**
-                        - Use this structure: <div class="page-break"></div> between pages
-                        - Each page should be wrapped in: <div class="page-container"><div class="content-wrapper">content</div></div>
-                        - Use @page { size: A4; margin: 0; } in CSS
-                        - Add page-break-before: always !important for .page-break class
-                        
-                        **Centering Requirements:**
-                        - Use flexbox for perfect centering: display: flex; align-items: center; justify-content: center;
-                        - Set .page-container width to 210mm, padding 20mm
-                        - Set .content-wrapper max-width to 170mm for content
-                        - Center titles with text-align: center
+                        IMPORTANT: Create A4-optimized HTML with smart page breaks:
                         
                         **ULTRA Div Protection Rules:**
                         - Every div element will NEVER split across pages (ultra-aggressive protection)
@@ -1041,7 +1012,7 @@
             document.getElementById('claudeResponse').style.display = 'block';
             document.getElementById('insertBtn').style.display = 'inline-flex';
             
-            showStatus('Claude created A4-optimized content successfully!', 'success');
+            showStatus('Claude created A4-optimized content with smart page breaks!', 'success');
             
         } catch (error) {
             showStatus('Error connecting to Claude: ' + error.message, 'error');
@@ -1056,7 +1027,7 @@
         if (currentClaudeResponse) {
             document.getElementById('htmlEditor').value = currentClaudeResponse;
             updatePreview();
-            showStatus('Claude\'s A4-optimized response inserted into editor!', 'success');
+            showStatus('Claude\'s smart page break content inserted into editor!', 'success');
         }
     }
 
@@ -1067,12 +1038,6 @@
             statusDiv.innerHTML = '';
         }, 5000);
     }
-
-    // Update button text when format changes
-    document.getElementById('formatSelect').addEventListener('change', function() {
-        const format = this.value.toUpperCase();
-        document.getElementById('exportBtn').innerHTML = `⬇️ Export PDF (${format})`;
-    });
 
     // Test function to check if html2pdf library is working
     function testPDFLibrary() {
@@ -1129,6 +1094,12 @@
         }
     }
 
+    // Update button text when format changes
+    document.getElementById('formatSelect').addEventListener('change', function() {
+        const format = this.value.toUpperCase();
+        document.getElementById('exportBtn').innerHTML = `⬇️ Export PDF (${format})`;
+    });
+
     // Initialize preview on page load
     updatePreview();
     
@@ -1149,17 +1120,6 @@
         console.log('GitHub Pages detected - PDF generation may have limitations');
         showStatus('GitHub Pages detected. If PDF export fails, use the Test button or run locally.', 'info');
     }
-    
-    // Add debug logging to ensure functions are loaded
-    console.log('All functions loaded successfully!');
-    console.log('Available functions:', {
-        updatePreview: typeof updatePreview,
-        togglePreview: typeof togglePreview,
-        generatePDF: typeof generatePDF,
-        askClaude: typeof askClaude,
-        insertClaudeResponse: typeof insertClaudeResponse,
-        showStatus: typeof showStatus
-    });
 </script>
 ```
 
