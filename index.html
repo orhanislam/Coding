@@ -366,10 +366,10 @@
                 
                 <label for="marginSelect" style="margin-left: 20px;">Margin:</label>
                 <select id="marginSelect">
-                    <option value="1">Small (1 in)</option>
-                    <option value="1.2" selected>Medium (1.2 in)</option>
-                    <option value="1.5">Large (1.5 in)</option>
-                    <option value="2">Extra Large (2 in)</option>
+                    <option value="0.8">Small (0.8 in)</option>
+                    <option value="1" selected>Medium (1 in)</option>
+                    <option value="1.25">Large (1.25 in)</option>
+                    <option value="1.5">Extra Large (1.5 in)</option>
                 </select>
             </div>
         </div>
@@ -391,19 +391,21 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            margin: 0;
-            padding: 30mm;
+            margin: 0 auto;
+            padding: 25mm;
             color: #333;
-            /* A4 optimized styling with extra safe margins */
-            max-width: 150mm; /* A4 width (210mm) minus safe margins (60mm total) */
+            /* A4 optimized styling with centered content */
+            max-width: 160mm; /* Slightly wider but still safe */
+            width: 100%;
             font-size: 12pt;
             box-sizing: border-box;
+            text-align: left;
         }
 
 ```
     @page {
         size: A4;
-        margin: 30mm; /* Extra safe margins */
+        margin: 25mm; /* Balanced margins */
     }
     
     h1 {
@@ -432,17 +434,17 @@
         background: #ecf0f1;
         padding: 15px;
         border-left: 4px solid #3498db;
-        margin: 20px 0;
+        margin: 20px auto; /* Center info boxes */
         page-break-inside: avoid;
-        max-width: 140mm; /* Ensure boxes don't exceed safe width */
+        max-width: 150mm; /* Ensure boxes fit properly */
         word-wrap: break-word;
     }
     
     table {
         border-collapse: collapse;
         width: 100%;
-        max-width: 140mm; /* Ensure tables don't exceed safe width */
-        margin: 20px 0;
+        max-width: 150mm; /* Ensure tables fit properly */
+        margin: 20px auto; /* Center tables */
         page-break-inside: avoid;
         table-layout: fixed; /* Fixed layout for better control */
     }
@@ -483,8 +485,10 @@
     /* PDF-specific adjustments */
     @media print {
         body {
-            margin: 0 !important;
-            padding: 30mm !important;
+            margin: 0 auto !important;
+            padding: 25mm !important;
+            max-width: 160mm !important;
+            width: 100% !important;
         }
         
         .page-break {
@@ -493,6 +497,11 @@
         
         .no-break {
             page-break-inside: avoid !important;
+        }
+        
+        table, .info-box {
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
     }
 </style>
@@ -533,12 +542,12 @@
         </tr>
         <tr>
             <td>Margins</td>
-            <td>30mm all sides (1.2 inch)</td>
-            <td>✅ Extra safe margins</td>
+            <td>25mm all sides (1 inch)</td>
+            <td>✅ Balanced margins</td>
         </tr>
         <tr>
             <td>Content Width</td>
-            <td>150mm (guaranteed safe)</td>
+            <td>160mm (properly centered)</td>
             <td>✅ No text cutoff</td>
         </tr>
         <tr>
@@ -638,11 +647,11 @@
         <div class="instructions-grid">
             <div class="instruction-item">
                 <h4>📏 A4 Specifications</h4>
-                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app uses 1.2-inch margins by default with content width of 150mm for guaranteed text visibility on all devices and printers.</p>
+                <p>A4 paper is 210 × 297 mm (8.27 × 11.69 inches). The app uses balanced 1-inch margins with content width of 160mm for optimal centering and text visibility.</p>
             </div>
             <div class="instruction-item">
                 <h4>🎯 Optimal Settings</h4>
-                <p>Use 12pt fonts for body text, 30mm margins (1.2 inches), and content width under 150mm for best A4 results. This ensures text is never cut off, even on older printers.</p>
+                <p>Use 12pt fonts for body text, 25mm margins (1 inch), and content width of 160mm for best A4 results. Content is automatically centered with proper margins on all sides.</p>
             </div>
             <div class="instruction-item">
                 <h4>📱 Export Options</h4>
@@ -709,21 +718,23 @@
         const element = document.createElement('div');
         element.innerHTML = htmlCode;
         
-        // Create a wrapper div for better PDF generation
+        // Create a properly centered wrapper div for PDF generation
         const wrapper = document.createElement('div');
         wrapper.style.cssText = `
             width: 210mm;
             min-height: 297mm;
-            margin: 0;
-            padding: 0;
+            margin: 0 auto;
+            padding: 25mm;
             background: white;
             font-family: Arial, sans-serif;
             color: #333;
             overflow: visible;
+            box-sizing: border-box;
+            position: relative;
         `;
         wrapper.innerHTML = htmlCode;
         
-        // A4 optimized PDF options with multi-page support
+        // A4 optimized PDF options with proper centering
         const opt = {
             margin: [margin, margin, margin, margin],
             filename: `document-${format}.pdf`,
@@ -732,19 +743,26 @@
                 quality: 0.92
             },
             html2canvas: { 
-                scale: 1.2,
+                scale: 1.0, // Reduced scale for better fit
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: '#ffffff',
                 logging: false,
                 scrollX: 0,
                 scrollY: 0,
-                windowWidth: 794,
-                windowHeight: 1123,
+                windowWidth: 794, // A4 width in pixels
+                windowHeight: 1123, // A4 height in pixels
+                x: 0,
+                y: 0,
                 onclone: function(clonedDoc) {
-                    // Ensure all content is visible in the clone
+                    // Ensure proper centering and full content visibility
                     clonedDoc.body.style.height = 'auto';
                     clonedDoc.body.style.overflow = 'visible';
+                    clonedDoc.body.style.margin = '0 auto';
+                    clonedDoc.body.style.padding = '25mm';
+                    clonedDoc.body.style.maxWidth = '160mm';
+                    clonedDoc.body.style.width = '100%';
+                    clonedDoc.body.style.boxSizing = 'border-box';
                 }
             },
             jsPDF: { 
@@ -807,17 +825,16 @@
                         content: `Create HTML content for: ${prompt}
 
                         IMPORTANT: Optimize for A4 paper format (210 × 297 mm) with these specifications:
-                        - Use @page { size: A4; margin: 30mm; } in CSS
-                        - Body padding: 30mm, max-width: 150mm for extra safe margins
+                        - Use @page { size: A4; margin: 25mm; } in CSS
+                        - Body: margin: 0 auto, padding: 25mm, max-width: 160mm for proper centering
                         - Body font-size: 12pt, line-height: 1.6
                         - Headings: h1 18pt, h2 14pt
-                        - Ensure ALL content fits within 150mm width to prevent any text cutoff
-                        - Use word-wrap: break-word for long text
-                        - Set max-width on tables and content boxes
+                        - Ensure content is centered with margins on all sides
+                        - Use margin: auto for tables and content boxes to center them
                         - Include page-break properties for print optimization
                         - Use professional spacing and typography
                         - Add print-friendly colors and styling
-                        - Test that absolutely no text extends to page edges
+                        - Test that content is properly centered and visible
 
                         Return ONLY the complete HTML code, starting with <!DOCTYPE html> and ending with </html>.
                         The HTML should be perfectly formatted for A4 PDF export.`
