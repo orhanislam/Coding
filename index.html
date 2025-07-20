@@ -851,7 +851,7 @@
                 quality: 0.98
             },
             html2canvas: { 
-                scale: 1.5, // Good scale for crisp text
+                scale: 1.0, // Reduced scale for better page break detection
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: '#ffffff',
@@ -860,38 +860,67 @@
                 scrollY: 0,
                 windowWidth: 794, // A4 width in pixels
                 windowHeight: 1123, // A4 height in pixels
+                removeContainer: true, // Better for page breaks
+                foreignObjectRendering: false, // Force canvas rendering
+                imageTimeout: 0,
                 onclone: function(clonedDoc) {
-                    // SUPER AGGRESSIVE div protection - prevent ANY splitting
-                    const allDivs = clonedDoc.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break)');
-                    allDivs.forEach(div => {
+                    // ULTRA AGGRESSIVE div protection - pre-process to add manual breaks
+                    const body = clonedDoc.body;
+                    const pageHeight = 1123; // A4 height in pixels
+                    const currentPageHeight = 0;
+                    let cumulativeHeight = 0;
+                    
+                    // Get all content divs that need protection
+                    const protectedDivs = clonedDoc.querySelectorAll('div:not(.page-container):not(.content-wrapper):not(.page-break)');
+                    
+                    protectedDivs.forEach((div, index) => {
+                        // Force each div to be a block and measure its height
+                        div.style.display = 'block';
                         div.style.pageBreakInside = 'avoid';
                         div.style.breakInside = 'avoid';
                         div.style.overflow = 'visible';
-                        div.style.display = 'block';
-                        div.style.orphans = '3';
-                        div.style.widows = '3';
-                        div.style.minHeight = 'auto';
-                        // Force div to stay together
-                        div.style.boxDecorationBreak = 'clone';
+                        div.style.boxSizing = 'border-box';
+                        
+                        // Add a small buffer to prevent edge cases
+                        const divHeight = div.offsetHeight || div.scrollHeight || 200;
+                        const safeHeight = divHeight + 50; // Add 50px buffer
+                        
+                        // If this div might not fit on current "page space", force a page break before it
+                        if (cumulativeHeight > 0 && (cumulativeHeight + safeHeight) > 950) { // 950px = safe page content height
+                            // Create a manual page break before this div
+                            const pageBreak = clonedDoc.createElement('div');
+                            pageBreak.className = 'force-page-break';
+                            pageBreak.style.pageBreakBefore = 'always';
+                            pageBreak.style.breakBefore = 'page';
+                            pageBreak.style.height = '1px';
+                            pageBreak.style.visibility = 'hidden';
+                            pageBreak.style.margin = '0';
+                            pageBreak.style.padding = '0';
+                            
+                            // Insert the page break before this div
+                            div.parentNode.insertBefore(pageBreak, div);
+                            cumulativeHeight = safeHeight; // Reset for new page
+                        } else {
+                            cumulativeHeight += safeHeight;
+                        }
+                        
+                        // Extra protection for the div itself
+                        div.style.pageBreakInside = 'avoid !important';
+                        div.style.breakInside = 'avoid !important';
+                        div.style.orphans = '10';
+                        div.style.widows = '10';
                     });
                     
-                    // Extra protection for quote-like content
-                    const protectedClasses = ['.quote', '.reference', '.citation', '.section', '.card', '.block', '.item', '.box', '.info-box', '.no-break'];
-                    protectedClasses.forEach(className => {
-                        const elements = clonedDoc.querySelectorAll(className);
-                        elements.forEach(el => {
-                            el.style.pageBreakInside = 'avoid';
-                            el.style.breakInside = 'avoid';
-                            el.style.overflow = 'visible';
-                            el.style.orphans = '3';
-                            el.style.widows = '3';
-                            el.style.display = 'block';
-                            el.style.boxDecorationBreak = 'clone';
-                            // If too tall for page, force to next page
-                            if (el.offsetHeight > 800) { // Rough page height check
-                                el.style.pageBreakBefore = 'always';
-                            }
-                        });
+                    // Apply styles to force page breaks to work
+                    const forceBreaks = clonedDoc.querySelectorAll('.force-page-break, .page-break');
+                    forceBreaks.forEach(breakEl => {
+                        breakEl.style.pageBreakBefore = 'always';
+                        breakEl.style.breakBefore = 'page';
+                        breakEl.style.display = 'block';
+                        breakEl.style.height = '1px';
+                        breakEl.style.visibility = 'hidden';
+                        breakEl.style.margin = '0';
+                        breakEl.style.padding = '0';
                     });
                     const pageBreaks = clonedDoc.querySelectorAll('.page-break');
                     pageBreaks.forEach(pb => {
