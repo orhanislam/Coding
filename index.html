@@ -13,70 +13,91 @@
             margin: 30px;
             background-color: white;
             color: black;
-        }
-        h1 {
-            font-size: 48px;
-            color: blue;
-            text-align: center;
-        }
-        h2 {
-            font-size: 40px;
-            color: darkblue;
-            margin-top: 50px;
-        }
-        .summary {
-            background-color: lightblue;
-            padding: 30px;
-            margin: 30px 0;
-            font-size: 34px;
-            /* ULTRA protection against page breaks */
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            overflow: visible !important;
-            display: block !important;
-        }
-        .ayah {
-            background-color: lightcyan;
-            padding: 30px;
-            margin: 30px 0;
-            border-left: 10px solid blue;
-            /* ULTRA protection against page breaks */
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            overflow: visible !important;
-            display: block !important;
-        }
-        .hadith {
-            background-color: lightyellow;
-            padding: 30px;
-            margin: 30px 0;
-            border-left: 10px solid green;
-            /* ULTRA protection against page breaks */
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            overflow: visible !important;
-            display: block !important;
-        }
-        .caliph {
-            background-color: lightpink;
-            padding: 30px;
-            margin: 30px 0;
-            border-left: 10px solid red;
-            /* ULTRA protection against page breaks */
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            overflow: visible !important;
-            display: block !important;
-            orphans: 10 !important;
-            widows: 10 !important;
-        }
-        .reference {
-            font-size: 28px;
-            color: gray;
-            margin-top: 20px;
+            min-height: 100vh; /* Ensure full page height */
+            display: flex;
+            flex-direction: column;
         }
 
 ```
+    .page-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically when there's space */
+        min-height: calc(100vh - 60px); /* Account for margins */
+    }
+    
+    .content-section {
+        margin: 20px 0;
+    }
+    
+    .balanced-spacing {
+        margin: 40px 0; /* Extra spacing for balanced look */
+    }
+    
+    h1 {
+        font-size: 48px;
+        color: blue;
+        text-align: center;
+        margin: 30px 0;
+    }
+    h2 {
+        font-size: 40px;
+        color: darkblue;
+        margin: 50px 0 30px 0;
+    }
+    .summary {
+        background-color: lightblue;
+        padding: 30px;
+        margin: 40px 0; /* Increased margin for better spacing */
+        font-size: 34px;
+        /* ULTRA protection against page breaks */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    .ayah {
+        background-color: lightcyan;
+        padding: 30px;
+        margin: 40px 0; /* Increased margin for better spacing */
+        border-left: 10px solid blue;
+        /* ULTRA protection against page breaks */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    .hadith {
+        background-color: lightyellow;
+        padding: 30px;
+        margin: 40px 0; /* Increased margin for better spacing */
+        border-left: 10px solid green;
+        /* ULTRA protection against page breaks */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    .caliph {
+        background-color: lightpink;
+        padding: 30px;
+        margin: 40px 0; /* Increased margin for better spacing */
+        border-left: 10px solid red;
+        /* ULTRA protection against page breaks */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+        orphans: 10 !important;
+        widows: 10 !important;
+    }
+    .reference {
+        font-size: 28px;
+        color: gray;
+        margin-top: 20px;
+    }
+    
     /* Smart page break classes */
     .manual-page-break {
         page-break-before: always !important;
@@ -85,6 +106,25 @@
         visibility: hidden !important;
         margin: 0 !important;
         padding: 0 !important;
+    }
+    
+    /* Balanced page class for pages with few items */
+    .balanced-page {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-evenly !important;
+        min-height: 100vh !important;
+        padding: 50px 30px !important;
+    }
+    
+    /* Centered page class for single items */
+    .centered-page {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 100vh !important;
+        padding: 50px 30px !important;
     }
     
     /* General div protection */
