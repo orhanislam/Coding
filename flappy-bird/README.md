@@ -8,7 +8,7 @@ A self-contained Flappy Bird clone using HTML5 Canvas + JavaScript. No build ste
 - Option 2: Serve the folder locally:
   
   ```bash
-  python3 -m http.server 8000 -d /workspace/flappy
+  python3 -m http.server 8000 -d /workspace/flappy-bird
   # then open http://localhost:8000
   ```
 
